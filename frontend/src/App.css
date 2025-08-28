@@ -1,0 +1,412 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  line-height: 1.6;
+  color: #2d3748;
+  background-size: 400% 400%;
+  animation: gradientShift 20s ease infinite;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+}
+
+/* Floating background elements */
+body::before {
+  content: '';
+  position: fixed;
+  top: 10%;
+  left: -5%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  animation: floatSlow 20s ease-in-out infinite;
+  z-index: 1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 10%;
+  right: -5%;
+  width: 250px;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  animation: floatSlow 25s ease-in-out infinite reverse;
+  z-index: 1;
+}
+
+@keyframes floatSlow {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg) scale(1);
+    opacity: 0.5;
+  }
+  33% { 
+    transform: translateY(-30px) rotate(120deg) scale(1.1);
+    opacity: 0.7;
+  }
+  66% { 
+    transform: translateY(30px) rotate(240deg) scale(0.9);
+    opacity: 0.6;
+  }
+}
+
+/* App container */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ultra-Modern Navigation Bar */
+.navbar {
+backdrop-filter: blur(40px);
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 50rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: navSlideDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes navSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animated top border */
+.navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;  background-size: 300% 100%;
+  animation: borderFlow 6s linear infinite;
+}
+
+@keyframes borderFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* Navbar on scroll effect */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(50px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Navigation Title */
+.navbar h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color:red;
+
+  /* gradient background applied to text */
+  background: linear-gradient(90deg, #ffffff, #a0aec0, #ffffff);
+  background-size: 200% 200%;
+  animation: titleShimmer 4s ease-in-out infinite;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+
+.navbar h2:hover {
+  transform: scale(1.05);
+  text-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes titleShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Brand icon effect (optional) */
+.navbar h2::before {
+  content: '🚀';
+  margin-right: 0.75rem;
+  font-size: 1.5rem;
+  display: inline-block;
+  animation: iconBounce 3s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(-5deg); }
+  75% { transform: translateY(-1px) rotate(5deg); }
+}
+
+/* Ultra-Modern Logout Button */
+.logout-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff8a80 100%);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 
+    0 8px 25px rgba(255, 107, 107, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Button shine effect */
+.logout-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+}
+
+.logout-btn:hover::before {
+  left: 100%;
+}
+
+.logout-btn:hover {
+  background-position: 100% 50%;
+  transform: translateY(-3px);
+  box-shadow: 
+    0 15px 35px rgba(255, 107, 107, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.logout-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 8px 20px rgba(255, 107, 107, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Button text */
+.logout-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+/* Logout icon (optional enhancement) */
+.logout-btn::after {
+  content: '→';
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.logout-btn:hover::after {
+  transform: translateX(3px);
+}
+
+/* Navigation Actions Container */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* User Info (if you want to add it) */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.user-info:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: white;
+}
+
+/* Responsive Navigation */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 1.25rem 2rem;
+  }
+  
+  .navbar h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem 1.5rem;
+  }
+  
+  .navbar h2 {
+    font-size: 1.5rem;
+  }
+  
+  .logout-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .user-info {
+    display: none; /* Hide on mobile to save space */
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .navbar h2 {
+    font-size: 1.375rem;
+  }
+  
+  .navbar h2::before {
+    font-size: 1.25rem;
+  }
+  
+  .logout-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+  }
+  
+  .nav-actions {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .navbar {
+    padding: 0.75rem;
+  }
+  
+  .navbar h2 {
+    font-size: 1.25rem;
+  }
+  
+  .logout-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .navbar h2,
+  .logout-btn,
+  .navbar::before {
+    animation: none;
+    transition: none;
+  }
+  
+  body {
+    animation: none;
+  }
+  
+  body::before,
+  body::after {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: none;
+    border-bottom: 2px solid #000;
+  }
+  
+  .navbar h2 {
+    color: #000;
+    -webkit-text-fill-color: #000;
+  }
+  
+  .logout-btn {
+    background: #dc3545;
+    background-size: 100% 100%;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #f7fafc;
+  }
+  
+  .navbar h2 {
+    -webkit-text-fill-color: transparent;
+  }
+}
