@@ -5,12 +5,13 @@ function TemplateForm() {
   const [form, setForm] = useState({
     name: '',
     description: '',
-    title: '',       // new
-    program: '',     // new
+    title: '',
+    program: '',
     html: '',
     css: ''
   });
-  const [error, setError] = useState('');
+
+  const [modal, setModal] = useState({ type: '', message: '', visible: false });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,19 +19,25 @@ function TemplateForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setModal({ type: 'loading', message: 'Submitting template...', visible: true });
+
     try {
       await api.put('/template', form);
       setForm({ name: '', description: '', title: '', program: '', html: '', css: '' });
-      alert('Template added/updated');
+      setModal({ type: 'success', message: 'Template added/updated successfully!', visible: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add template');
+      setModal({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to add template',
+        visible: true
+      });
     }
   };
 
   return (
-    <div>
+    <div className="template-form-container">
       <h4>Add/Update Template</h4>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="template-form">
         <input
           type="text"
           name="name"
@@ -76,8 +83,22 @@ function TemplateForm() {
           rows="5"
         />
         <button type="submit">Submit Template</button>
-        {error && <p className="error">{error}</p>}
       </form>
+
+      {/* ✅ Modal */}
+      {modal.visible && (
+        <div className="template-modal-overlay">
+          <div className={`template-modal ${modal.type}`}>
+            {modal.type === 'loading' && <div className="template-loader"></div>}
+            <p>{modal.message}</p>
+            {modal.type !== 'loading' && (
+              <button onClick={() => setModal({ ...modal, visible: false })}>
+                Close
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

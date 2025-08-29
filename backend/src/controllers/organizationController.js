@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { ethers } from "ethers";
 import User from "../models/User.js";
 import UserDetail from "../models/UserDetail.js";
+import { transporter } from "../utils/mailer.js"; // ⬅️ Import nodemailer transporter
 
 export const addUser = async (req, res) => {
   try {
@@ -34,16 +35,26 @@ export const addUser = async (req, res) => {
 
     await user.save();
 
+    // ✅ send password by email
+    await transporter.sendMail({
+      from: '"Organization Admin" <do.not.reply.to.this.17@gmail.com>',
+      to: email,
+      subject: "Your Account Password",
+      text: `Your password is: ${password}\n\nPlease change it after first login.`,
+    });
+
     res.json({
       id: user._id,
       email: user.email,
       wallet: user.wallet,
+      message: "User created and password sent via email",
     });
   } catch (e) {
     console.error("Error adding user:", e);
     res.status(500).json({ message: e.message });
   }
 };
+
 
 export const getUsers = async (req, res) => {
   try {

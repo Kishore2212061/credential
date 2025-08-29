@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { api } from '../utils/api';
+import React, { useState, useEffect } from "react";
+import { api } from "../utils/api";
 
 function SemesterForm() {
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
-    userId: '',
-    semesterNumber: '',
-    monthYearOfExam: '',
-    dateOfPublication: '',
-    subjects: [{ subjectCode: '', subjectTitle: '', credits: '', grade: '', result: '' }],
-    gpa: '',
-    cgpa: ''
+    userId: "",
+    semesterNumber: "",
+    monthYearOfExam: "",
+    dateOfPublication: "",
+    subjects: [
+      { subjectCode: "", subjectTitle: "", credits: "", grade: "", result: "" },
+    ],
+    gpa: "",
+    cgpa: "",
   });
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await api.get('/organization/users');
+        const res = await api.get("/organization/users");
         setUsers(res.data);
       } catch (err) {
         console.error(err);
@@ -36,42 +40,78 @@ function SemesterForm() {
     }
   };
 
+  const removeSubject = (index) => {
+    const newSubjects = form.subjects.filter((_, i) => i !== index);
+    setForm({ ...form, subjects: newSubjects });
+  };
+
   const addSubject = () => {
     setForm({
       ...form,
-      subjects: [...form.subjects, { subjectCode: '', subjectTitle: '', credits: '', grade: '', result: '' }]
+      subjects: [
+        ...form.subjects,
+        {
+          subjectCode: "",
+          subjectTitle: "",
+          credits: "",
+          grade: "",
+          result: "",
+        },
+      ],
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
     try {
-      await api.put('/semester', form);
+      await api.put("/semester", form);
       setForm({
-        userId: '',
-        semesterNumber: '',
-        monthYearOfExam: '',
-        dateOfPublication: '',
-        subjects: [{ subjectCode: '', subjectTitle: '', credits: '', grade: '', result: '' }],
-        gpa: '',
-        cgpa: ''
+        userId: "",
+        semesterNumber: "",
+        monthYearOfExam: "",
+        dateOfPublication: "",
+        subjects: [
+          {
+            subjectCode: "",
+            subjectTitle: "",
+            credits: "",
+            grade: "",
+            result: "",
+          },
+        ],
+        gpa: "",
+        cgpa: "",
       });
-      alert('Semester added/updated');
+      setSuccess("Semester added/updated successfully!");
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add semester');
+      setError(err.response?.data?.message || "Failed to add semester");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
       <h4>Add/Update Semester</h4>
-      <form onSubmit={handleSubmit}>
-        <select name="userId" value={form.userId} onChange={handleChange} required>
+      <form className="semester-form" onSubmit={handleSubmit}>
+        <select
+          name="userId"
+          value={form.userId}
+          onChange={handleChange}
+          required
+        >
           <option value="">Select User</option>
-          {users.map(user => (
-            <option key={user._id} value={user._id}>{user.email}</option>
+          {users.map((user) => (
+            <option key={user._id} value={user._id}>
+              {user.email}
+            </option>
           ))}
         </select>
+
         <input
           type="number"
           name="semesterNumber"
@@ -80,6 +120,7 @@ function SemesterForm() {
           onChange={handleChange}
           required
         />
+
         <input
           type="text"
           name="monthYearOfExam"
@@ -87,6 +128,7 @@ function SemesterForm() {
           value={form.monthYearOfExam}
           onChange={handleChange}
         />
+
         <input
           type="date"
           name="dateOfPublication"
@@ -94,8 +136,9 @@ function SemesterForm() {
           onChange={handleChange}
           required
         />
+
         {form.subjects.map((subject, index) => (
-          <div key={index} style={{ marginBottom: '10px' }}>
+          <div key={index} style={{ marginBottom: "10px" }}>
             <input
               type="text"
               name="subjectCode"
@@ -131,9 +174,18 @@ function SemesterForm() {
               value={subject.result}
               onChange={(e) => handleChange(e, index)}
             />
+            {form.subjects.length > 1 && (
+              <button type="button" onClick={() => removeSubject(index)}>
+                Remove
+              </button>
+            )}
           </div>
         ))}
-        <button type="button" onClick={addSubject}>Add Subject</button>
+
+        <button type="button" onClick={addSubject}>
+          Add Subject
+        </button>
+
         <input
           type="number"
           name="gpa"
@@ -148,9 +200,31 @@ function SemesterForm() {
           value={form.cgpa}
           onChange={handleChange}
         />
-        <button type="submit">Submit Semester</button>
-        {error && <p className="error">{error}</p>}
+
+        <button type="submit" disabled={loading}>
+          Submit Semester
+        </button>
       </form>
+
+      {loading && <div className="loader"></div>}
+
+      {error && (
+        <div className="modal">
+          <div className="modal-content error">
+            <p>{error}</p>
+            <button onClick={() => setError("")}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {success && (
+        <div className="modal">
+          <div className="modal-content success">
+            <p>{success}</p>
+            <button onClick={() => setSuccess("")}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

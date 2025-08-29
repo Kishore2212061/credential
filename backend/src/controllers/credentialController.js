@@ -9,16 +9,14 @@ import fs from "fs/promises";
 
 import { renderPDF } from "../services/pdfService.js";
 import { sha256OfFile, fileBytes } from "../services/hashService.js";
-import { uploadBytesToIPFS } from "../services/ipfsService.js"; // <- Pinata client
+import { uploadBytesToIPFS } from "../services/ipfsService.js"; 
 import {
   computeSeriesId,
   chainIssue,
   chainAddVersion,
   getIssuerAddress,
-  chainLatestVersion,
-  chainGetVersion
 } from "../services/chainService.js";
-import { isAddress } from "ethers";
+import { transporter } from "../utils/mailer.js"; // ⬅️ import nodemailer transporter
 
 export const issueCredential = async (req, res) => {
   try {
@@ -83,8 +81,6 @@ export const issueCredential = async (req, res) => {
       }
     };
 
-    console.log(sem.gpa)
-
     const tempDir = path.join(process.cwd(), "temp");
     await fs.mkdir(tempDir, { recursive: true });
     const tempPath = path.join(tempDir, `credential_${Date.now()}.pdf`);
@@ -96,19 +92,12 @@ export const issueCredential = async (req, res) => {
     const ipfsCid = await uploadBytesToIPFS(pdfBytes);
 
     const issuerAddr = getIssuerAddress(); 
-    console.log("Issuer:", issuerAddr);
-
     const seriesId = computeSeriesId({
       issuer: issuerAddr,
       userId,
       semesterId: semesterNumber,   
       templateId
     });
-
-    console.log("Series ID:", seriesId);  
-    if (!issuerAddr) {
-      throw new Error("Issuer address not found for organization");
-    }
 
     const latest = await Credential.findOne({ seriesId }).sort({ version: -1 });
 
@@ -149,7 +138,7 @@ export const issueCredential = async (req, res) => {
       latestVersion: newVersion,
       chain: {
         network: process.env.CHAIN_NAME || "sepolia",
-        contract: process.env.REGISTRY_CONTRACT || "0xC28Fa4CB113429d92248A7f7072F780E0133eed8",
+        contract: process.env.REGISTRY_CONTRACT || "0x41143621267f3857436D1aefE8090Fec3500f363",
         txHash,
         revoked: false,
       },
@@ -158,10 +147,25 @@ export const issueCredential = async (req, res) => {
 
     await Credential.updateMany({ seriesId }, { $set: { latestVersion: newVersion } });
 
+    // ✅ send email with PDF attached
+    await transporter.sendMail({
+      from: '"Organization Admin" <do.not.reply.to.this.17@gmail.com>',
+      to: user.email,
+      subject: "Your Academic Credential",
+      text: `Hello ${profile?.name || "Student"},\n\nAttached is your issued academic credential.\n\nBest regards,\n${org.name}`,
+      attachments: [
+        {
+          filename: "credential.pdf",
+          path: tempPath, // attach file before deleting
+        },
+      ],
+    });
+
+    // delete local file after sending email
     await fs.unlink(tempPath);
 
     return res.status(201).json({
-      message: "✅ Credential issued successfully (on-chain)",
+      message: "✅ Credential issued successfully, emailed to user",
       credential,
     });
   } catch (err) {
@@ -171,6 +175,7 @@ export const issueCredential = async (req, res) => {
       .json({ message: "Error issuing credential", error: err.message });
   }
 };
+
 
 
 export const listCredentials = async (req, res) => {
@@ -221,6 +226,8 @@ export const getCredentials = async (req, res) => {
           select: "name degree branch registerNo mode regulations", 
         },
       }); 
+
+      console.log(JSON.stringify(creds))
 
     res.json(creds);
   } catch (e) {

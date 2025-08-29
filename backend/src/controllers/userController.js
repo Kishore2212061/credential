@@ -2,19 +2,35 @@ import UserDetail from "../models/UserDetail.js";
 import User from "../models/User.js";
 
 // User edits own profile
+
 export const upsertMyProfile = async (req, res) => {
   try {
-    if (req.user.role !== "user") return res.status(403).json({ message: "Forbidden" });
+    if (req.user.role !== "user") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
 
     const body = req.body; // {name, degree, branch, mode, registerNo, regulations}
+
+    // upsert UserDetail
     const doc = await UserDetail.findOneAndUpdate(
       { user: req.user.id },
       { $set: { ...body, user: req.user.id } },
       { upsert: true, new: true }
     );
+
+    // update User to reference this UserDetail
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: { userDetail: doc._id } },
+      { new: true }
+    );
+
     res.json(doc);
-  } catch (e) { res.status(500).json({ message: e.message }); }
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
 };
+
 
 // Organization fills missing fields for a user (only adds where empty)
 export const orgFillMissingProfile = async (req, res) => {
