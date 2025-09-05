@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
+import {
+  ProfileContainer,
+  ProfileTitle,
+  ProfileForm,
+  Input,
+  ProfileButton,
+  ModalOverlay,
+  Modal,
+  Loader,
+} from "./UserProfile.styles";
 
 function UserProfile() {
   const [profile, setProfile] = useState({});
@@ -42,46 +52,46 @@ function UserProfile() {
   };
 
   return (
-    <div className="profile-container">
-      <h4 className="profile-title">My Profile</h4>
+    <ProfileContainer>
+      <ProfileTitle>My Profile</ProfileTitle>
 
-      <form onSubmit={handleSubmit} className="profile-form">
-        <input
+      <ProfileForm onSubmit={handleSubmit}>
+        <Input
           type="text"
           name="name"
           placeholder="Name"
           value={profile.name || ""}
           onChange={handleChange}
         />
-        <input
+        <Input
           type="text"
           name="degree"
           placeholder="Degree"
           value={profile.degree || ""}
           onChange={handleChange}
         />
-        <input
+        <Input
           type="text"
           name="branch"
           placeholder="Branch"
           value={profile.branch || ""}
           onChange={handleChange}
         />
-        <input
+        <Input
           type="text"
           name="mode"
           placeholder="Mode"
           value={profile.mode || ""}
           onChange={handleChange}
         />
-        <input
+        <Input
           type="text"
           name="registerNo"
           placeholder="Register No"
           value={profile.registerNo || ""}
           onChange={handleChange}
         />
-        <input
+        <Input
           type="text"
           name="regulations"
           placeholder="Regulations"
@@ -89,41 +99,39 @@ function UserProfile() {
           onChange={handleChange}
         />
 
-        <button type="submit" className="profile-btn">
-          Update Profile
-        </button>
-      </form>
+        <ProfileButton type="submit">Update Profile</ProfileButton>
+      </ProfileForm>
 
       {/* Loader Modal */}
       {loading && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="loader"></div>
+        <ModalOverlay>
+          <Modal>
+            <Loader />
             <p>Loading...</p>
-          </div>
-        </div>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {/* Error Modal */}
       {error && (
-        <div className="modal-overlay">
-          <div className="modal error">
+        <ModalOverlay>
+          <Modal className="error">
             <p>{error}</p>
             <button onClick={() => setError("")}>Close</button>
-          </div>
-        </div>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {/* Success Modal */}
       {success && (
-        <div className="modal-overlay">
-          <div className="modal success">
+        <ModalOverlay>
+          <Modal className="success">
             <p>{success}</p>
             <button onClick={() => setSuccess("")}>Close</button>
-          </div>
-        </div>
+          </Modal>
+        </ModalOverlay>
       )}
-    </div>
+    </ProfileContainer>
   );
 }
 

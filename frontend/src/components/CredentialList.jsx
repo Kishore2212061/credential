@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
+import {
+  CredentialListContainer,
+  CredentialTable,
+  VerifyButton,
+  StatusBadge,
+  PDFLink,
+  EmptyState,
+  LoadingRow,
+} from './CredentialList.styles';
 
 function CredentialList({ setSuccess, setError }) {
   const [credentials, setCredentials] = useState([]);
@@ -38,9 +47,10 @@ function CredentialList({ setSuccess, setError }) {
   };
 
   return (
-    <div className="credential-list">
+    <CredentialListContainer>
       <h3>Credentials</h3>
-      <table>
+
+      <CredentialTable>
         <thead>
           <tr>
             <th>User</th>
@@ -51,7 +61,11 @@ function CredentialList({ setSuccess, setError }) {
           </tr>
         </thead>
         <tbody>
-          {credentials.length > 0 ? (
+          {loading ? (
+            <LoadingRow>
+              <td colSpan="5">Loading credentials...</td>
+            </LoadingRow>
+          ) : credentials.length > 0 ? (
             credentials.map((cred) => {
               const v = verifications[cred._id] || {};
               return (
@@ -59,39 +73,51 @@ function CredentialList({ setSuccess, setError }) {
                   <td>{cred.user?.userDetail?.name || 'N/A'}</td>
                   <td>{cred.semester?.semesterNumber || 'N/A'}</td>
                   <td>{cred.template?.name || 'N/A'}</td>
-<td>
-  {cred.cid ? (
-    <a
-      href={`https://ipfs.io/ipfs/${cred.cid}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      View PDF
-    </a>
-  ) : (
-    'N/A'
-  )}
-</td>
-
                   <td>
-                    <button onClick={() => handleVerify(cred._id)} disabled={v.loading}>
+                    {cred.cid ? (
+                      <PDFLink
+                        href={cred.cid}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View PDF
+                      </PDFLink>
+                    ) : (
+                      'N/A'
+                    )}
+                  </td>
+                  <td>
+                    <VerifyButton
+                      onClick={() => handleVerify(cred._id)}
+                      disabled={v.loading}
+                    >
                       {v.loading ? 'Verifying...' : 'Verify'}
-                    </button>
-                    {v.verified === true && <span className="valid">✅ Valid</span>}
-                    {v.verified === false && <span className="invalid">❌ Invalid</span>}
-                    {v.error && <span className="warning">⚠️ {v.error}</span>}
+                    </VerifyButton>
+                    {v.verified === true && (
+                      <StatusBadge className="valid">✅ Valid</StatusBadge>
+                    )}
+                    {v.verified === false && (
+                      <StatusBadge className="invalid">❌ Invalid</StatusBadge>
+                    )}
+                    {v.error && (
+                      <StatusBadge className="warning">⚠️ {v.error}</StatusBadge>
+                    )}
                   </td>
                 </tr>
               );
             })
           ) : (
             <tr>
-              <td colSpan="5">No credentials found</td>
+              <td colSpan="5">
+                <EmptyState>
+                  <p>No credentials found</p>
+                </EmptyState>
+              </td>
             </tr>
           )}
         </tbody>
-      </table>
-    </div>
+      </CredentialTable>
+    </CredentialListContainer>
   );
 }
 

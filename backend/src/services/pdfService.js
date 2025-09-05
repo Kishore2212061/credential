@@ -4,12 +4,15 @@ import fs from "fs";
 import path from "path";
 
 export const renderPDF = async ({ html, css, data, outPath }) => {
-  // inline CSS
   const pageHtml = `
     <html>
       <head><meta charset="utf-8"><style>${css || ""}</style></head>
       <body>${handlebars.compile(html)(data)}</body>
     </html>`;
+
+  if (!outPath) {
+    return pageHtml;
+  }
 
   const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   const page = await browser.newPage();

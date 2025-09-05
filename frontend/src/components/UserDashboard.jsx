@@ -2,6 +2,16 @@ import React, { useState, useEffect } from "react";
 import { api, getId } from "../utils/api";
 import UserProfile from "./UserProfile";
 import UserCredential from "./UserCredentials";
+import {
+  DashboardContainer,
+  Sidebar,
+  MainContent,
+  Loader,
+  ErrorModal,
+  SuccessModal,
+  SemesterTable,
+  EmptyState,
+} from "./UserDashboard.styles";
 
 function UserDashboard() {
   const [semesters, setSemesters] = useState([]);
@@ -27,9 +37,9 @@ function UserDashboard() {
   }, []);
 
   return (
-    <div className="dashboard-container">
+    <DashboardContainer>
       {/* Sidebar */}
-      <aside className="sidebar">
+      <Sidebar>
         <h2>Dashboard</h2>
         <ul>
           <li
@@ -51,22 +61,23 @@ function UserDashboard() {
             Credentials
           </li>
         </ul>
-      </aside>
+      </Sidebar>
 
       {/* Main Content */}
-      <main className="main-content">
+      <MainContent>
         <h3>User Dashboard</h3>
 
-        {loading && <div className="loader">Loading...</div>}
-        {error && <div className="error-modal">{error}</div>}
-        {success && <div className="success-modal">{success}</div>}
+        {loading && <Loader>Loading...</Loader>}
+        {error && <ErrorModal>{error}</ErrorModal>}
+        {success && <SuccessModal>{success}</SuccessModal>}
 
         {activeTab === "profile" && <UserProfile />}
+
         {activeTab === "semesters" && (
           <>
             <h4>Semesters</h4>
             {semesters.length > 0 ? (
-              <table>
+              <SemesterTable>
                 <thead>
                   <tr>
                     <th>Semester</th>
@@ -95,15 +106,16 @@ function UserDashboard() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </SemesterTable>
             ) : (
-              !loading && <p>No semesters found.</p>
+              !loading && <EmptyState>No semesters found.</EmptyState>
             )}
           </>
         )}
-        {activeTab === "credentials" && <UserCredential userId={getId()} />}
-      </main>
-    </div>
+
+        {activeTab === "credentials" && <UserCredential userId={getId()} mode="user" />}
+      </MainContent>
+    </DashboardContainer>
   );
 }
 

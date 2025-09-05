@@ -5,12 +5,12 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, default: "user" },
   organization: { type: mongoose.Schema.Types.ObjectId, ref: "Organization", required: true },
-  wallet: { type: String, required: true }, // public wallet address
-  privateKey: { type: String, select: false },
-  userDetail: { type: mongoose.Schema.Types.ObjectId, ref: "UserDetail" },  
+  wallet: { type: String, default: null }, // store only wallet address
+  userDetail: { type: mongoose.Schema.Types.ObjectId, ref: "UserDetail" },
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);
+
 // 📌 Prompt to Generate Clean Frontend
 
 // You are an expert frontend developer. I have already built my backend in Node.js + Express + MongoDB, and I now need you to build a clean frontend.

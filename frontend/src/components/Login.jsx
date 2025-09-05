@@ -1,6 +1,36 @@
 import React, { useState } from "react";
 import { api, setAuth } from "../utils/api";
 
+// styled components
+import {
+  LoginContainer,
+  LoginCard,
+  LoginHeader,
+  FormIcon,
+  LoginTitle,
+  LoginSubtitle,
+  LoginForm,
+  FormGroup,
+  Label,
+  InputWrapper,
+  LoginInput,
+  LoginSelect,
+  LoginButton,
+  LoadingOverlay,
+  LoadingContainer,
+  Spinner,
+  LoadingText,
+  ModalOverlay,
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalIcon,
+  ModalTitle,
+  ModalText,
+  ModalActions,
+  CloseButton
+} from "./Login.styles";
+
 function Login({ onLogin }) {
   const [role, setRole] = useState("platform");
   const [email, setEmail] = useState("");
@@ -8,13 +38,27 @@ function Login({ onLogin }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 🔑 new state for wallet info (first login case)
+  const [walletInfo, setWalletInfo] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const res = await api.post("/auth/login", { role, email, password });
       setAuth(res.data.token, res.data.role, res.data.id);
-      onLogin();
+      console.log(JSON.stringify(res.data))
+
+      if (res.data.privateKey) {
+        // First login → wallet just created
+        setWalletInfo({
+          address: res.data.wallet,
+          privateKey: res.data.privateKey,
+        });
+      } else {
+        // Normal login
+        onLogin();
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     } finally {
@@ -23,84 +67,111 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
-          <div className="form-icon">🔐</div>
-          <h2 className="login-title">Welcome Back</h2>
-          <p className="login-subtitle">Sign in to your account</p>
-        </div>
+    <LoginContainer>
+      <LoginCard>
+        <LoginHeader>
+          <FormIcon>🔐</FormIcon>
+          <LoginTitle>Welcome Back</LoginTitle>
+          <LoginSubtitle>Sign in to your account</LoginSubtitle>
+        </LoginHeader>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Select Role</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className="login-select">
+        <LoginForm onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label>Select Role</Label>
+            <LoginSelect value={role} onChange={(e) => setRole(e.target.value)}>
               <option value="platform">Platform Admin</option>
               <option value="organization">Organization</option>
               <option value="user">User</option>
-            </select>
-          </div>
+            </LoginSelect>
+          </FormGroup>
 
-          <div className="form-group">
-            <label>Email Address</label>
-            <div className="input-wrapper">
-              <input
+          <FormGroup>
+            <Label>Email Address</Label>
+            <InputWrapper>
+              <LoginInput
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="login-input"
               />
-            </div>
-          </div>
+            </InputWrapper>
+          </FormGroup>
 
-          <div className="form-group">
-            <label>Password</label>
-            <div className="input-wrapper">
-              <input
+          <FormGroup>
+            <Label>Password</Label>
+            <InputWrapper>
+              <LoginInput
                 type="password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="login-input"
               />
-            </div>
-          </div>
+            </InputWrapper>
+          </FormGroup>
 
-          <button type="submit" className="login-btn" disabled={loading}>
+          <LoginButton type="submit" disabled={loading}>
             {loading ? "Signing In..." : "Sign In"}
-          </button>
-        </form>
-      </div>
+          </LoginButton>
+        </LoginForm>
+      </LoginCard>
 
       {loading && (
-        <div className="loading-overlay">
-          <div className="loading-container">
-            <div className="spinner"></div>
-            <p className="loading-text">Authenticating...</p>
-          </div>
-        </div>
+        <LoadingOverlay>
+          <LoadingContainer>
+            <Spinner />
+            <LoadingText>Authenticating...</LoadingText>
+          </LoadingContainer>
+        </LoadingOverlay>
       )}
 
+      {/* Error modal */}
       {error && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <span className="modal-icon">⚠️</span>
-              <h3 className="modal-title">Authentication Error</h3>
-            </div>
-            <p className="modal-text">{error}</p>
-            <div className="modal-actions">
-              <button className="close-btn" onClick={() => setError("")}>
-                Try Again
-              </button>
-            </div>
-          </div>
-        </div>
+        <ModalOverlay>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>⚠️</ModalIcon>
+              <ModalTitle>Authentication Error</ModalTitle>
+            </ModalHeader>
+            <ModalText>{error}</ModalText>
+            <ModalActions>
+              <CloseButton onClick={() => setError("")}>Try Again</CloseButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
       )}
-    </div>
+
+      {/* Wallet modal shown on first login */}
+      {walletInfo && (
+        <ModalOverlay>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>🔑</ModalIcon>
+              <ModalTitle>Your Wallet Has Been Created</ModalTitle>
+            </ModalHeader>
+           <ModalContent as="div">
+              <p><strong>Address:</strong> {walletInfo.address}</p>
+              <p><strong>Private Key:</strong> {walletInfo.privateKey}</p>
+              <br />
+              ⚠️ Please save this private key securely. 
+              You will need it to import your wallet into MetaMask. 
+              It will not be shown again.
+            </ModalContent>
+            <ModalActions>
+              <CloseButton
+                onClick={() => {
+                  setWalletInfo(null);
+                  onLogin();
+                }}
+              >
+                I Have Saved It
+              </CloseButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
+      )}
+    </LoginContainer>
   );
 }
 

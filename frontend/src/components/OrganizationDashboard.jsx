@@ -1,25 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { api } from '../utils/api';
-import AddUser from './AddUser';
-import SemesterForm from './SemesterForm';
-import TemplateForm from './TemplateForm';
-import IssueCredential from './IssueCredential';
-import CredentialList from './CredentialList'
+import React, { useState, useEffect } from "react";
+import { api } from "../utils/api";
+import AddUser from "./AddUser";
+import SemesterForm from "./SemesterForm";
+import TemplateForm from "./TemplateForm";
+import IssueCredential from "./IssueCredential";
+import CredentialList from "./CredentialList";
+import VerifierOnboard from "./VerifierOnboard";
+
+import {
+  OrganizationDashboard as DashboardContainer,
+  Sidebar,
+  SidebarTitle,
+  SidebarMenu,
+  SidebarMenuItem,
+  MainContent,
+  UserTable,
+  LoadingOverlay,
+  Spinner,
+  ModalOverlay,
+  Modal,
+  CloseButton,
+} from "./OrganizationDashboard.styles";
 
 function OrganizationDashboard() {
-  const [activeTab, setActiveTab] = useState('userList');
+  const [activeTab, setActiveTab] = useState("userList");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/organization/users');
+      const res = await api.get("/organization/users");
       setUsers(res.data || []);
     } catch (err) {
-      setError('Failed to fetch users');
+      setError("Failed to fetch users");
     } finally {
       setLoading(false);
     }
@@ -30,57 +46,69 @@ function OrganizationDashboard() {
   }, []);
 
   return (
-    <div className="organization-dashboard">
+    <DashboardContainer>
       {/* Sidebar */}
-      <aside className="sidebar">
-        <h2 className="sidebar-title">Organization Dashboard</h2>
-        <ul className="sidebar-menu">
-          <li
-            className={activeTab === 'addUser' ? 'active' : ''}
-            onClick={() => setActiveTab('addUser')}
+      <Sidebar>
+        <SidebarTitle>Organization Dashboard</SidebarTitle>
+        <SidebarMenu>
+          <SidebarMenuItem
+            className={activeTab === "addUser" ? "active" : ""}
+            onClick={() => setActiveTab("addUser")}
           >
             Add User
-          </li>
-          <li
-            className={activeTab === 'userList' ? 'active' : ''}
-            onClick={() => setActiveTab('userList')}
+          </SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "userList" ? "active" : ""}
+            onClick={() => setActiveTab("userList")}
           >
             User List
-          </li>
-          <li
-            className={activeTab === 'semesterForm' ? 'active' : ''}
-            onClick={() => setActiveTab('semesterForm')}
+          </SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "semesterForm" ? "active" : ""}
+            onClick={() => setActiveTab("semesterForm")}
           >
             Semester Form
-          </li>
-          <li
-            className={activeTab === 'templateForm' ? 'active' : ''}
-            onClick={() => setActiveTab('templateForm')}
+          </SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "templateForm" ? "active" : ""}
+            onClick={() => setActiveTab("templateForm")}
           >
             Template Form
-          </li>
-          <li
-            className={activeTab === 'issueCredential' ? 'active' : ''}
-            onClick={() => setActiveTab('issueCredential')}
+          </SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "issueCredential" ? "active" : ""}
+            onClick={() => setActiveTab("issueCredential")}
           >
             Issue Credential
-          </li>
-          <li
-            className={activeTab === 'credentialList' ? 'active' : ''}
-            onClick={() => setActiveTab('credentialList')}
+          </SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "credentialList" ? "active" : ""}
+            onClick={() => setActiveTab("credentialList")}
           >
             Credential List
-          </li>
-        </ul>
-      </aside>
+          </SidebarMenuItem>
+                  <SidebarMenuItem
+  className={activeTab === "inviteVerifier" ? "active" : ""}
+  onClick={() => setActiveTab("inviteVerifier")}
+>
+  Invite Verifier
+</SidebarMenuItem>
+        </SidebarMenu>
+      </Sidebar>
 
       {/* Main Content */}
-      <main className="main-content">
-        {activeTab === 'addUser' && <AddUser onAdd={fetchUsers} setSuccess={setSuccess} setError={setError} />}
-        {activeTab === 'userList' && (
+      <MainContent>
+        {activeTab === "addUser" && (
+          <AddUser
+            onAdd={fetchUsers}
+            setSuccess={setSuccess}
+            setError={setError}
+          />
+        )}
+        {activeTab === "userList" && (
           <div>
             <h3>User List</h3>
-            <table className="user-table">
+            <UserTable>
               <thead>
                 <tr>
                   <th>Email</th>
@@ -95,55 +123,62 @@ function OrganizationDashboard() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="1" style={{ textAlign: 'center' }}>
+                    <td colSpan="1" style={{ textAlign: "center" }}>
                       No users found
                     </td>
                   </tr>
                 )}
               </tbody>
-            </table>
+            </UserTable>
           </div>
         )}
-        {activeTab === 'semesterForm' && <SemesterForm setSuccess={setSuccess} setError={setError} />}
-        {activeTab === 'templateForm' && <TemplateForm setSuccess={setSuccess} setError={setError} />}
-{activeTab === 'issueCredential' && <IssueCredential setSuccess={setSuccess} setError={setError} />}
-{activeTab === 'credentialList' && <CredentialList setSuccess={setSuccess} setError={setError} />}
+        {activeTab === "semesterForm" && (
+          <SemesterForm setSuccess={setSuccess} setError={setError} />
+        )}
+        {activeTab === "templateForm" && (
+          <TemplateForm setSuccess={setSuccess} setError={setError} />
+        )}
+        {activeTab === "issueCredential" && (
+          <IssueCredential setSuccess={setSuccess} setError={setError} />
+        )}
+        {activeTab === "credentialList" && (
+          <CredentialList setSuccess={setSuccess} setError={setError} />
+        )}
+        {activeTab === "inviteVerifier" && (
+  <VerifierOnboard setSuccess={setSuccess} setError={setError} />
+)}
 
-      </main>
+      </MainContent>
 
       {/* Loader */}
       {loading && (
-        <div className="loading-overlay">
-          <div className="spinner"></div>
-        </div>
+        <LoadingOverlay>
+          <Spinner />
+        </LoadingOverlay>
       )}
 
       {/* Error Modal */}
       {error && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <ModalOverlay>
+          <Modal>
             <h3>Error</h3>
             <p>{error}</p>
-            <button onClick={() => setError('')} className="close-btn">
-              Close
-            </button>
-          </div>
-        </div>
+            <CloseButton onClick={() => setError("")}>Close</CloseButton>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {/* Success Modal */}
       {success && (
-        <div className="modal-overlay">
-          <div className="modal success-modal">
+        <ModalOverlay>
+          <Modal className="success-modal">
             <h3>Success</h3>
             <p>{success}</p>
-            <button onClick={() => setSuccess('')} className="close-btn">
-              Close
-            </button>
-          </div>
-        </div>
+            <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+          </Modal>
+        </ModalOverlay>
       )}
-    </div>
+    </DashboardContainer>
   );
 }
 

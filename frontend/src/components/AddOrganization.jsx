@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
+import {
+  AddOrgContainer,
+  AddOrgForm,
+  Input,
+  SubmitButton,
+  LoadingOverlay,
+  Spinner,
+  ModalOverlay,
+  Modal,
+  CloseButton,
+} from "./AddOrganization.styles";
 
 function AddOrganization({ onAdd, editOrg, clearEdit }) {
   const [name, setName] = useState("");
@@ -55,72 +66,63 @@ function AddOrganization({ onAdd, editOrg, clearEdit }) {
   };
 
   return (
-    <div className="add-org-container">
-      <div>
-        <h3>{editOrg ? "Edit Organization" : "Add Organization"}</h3>
-        <form className="add-org-form" onSubmit={handleSubmit}>
-          <input
-            className="input"
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <input
-            className="input"
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            className="input"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="submit-btn" type="submit">
-            {editOrg ? "Update Organization" : "Add Organization"}
-          </button>
-        </form>
+    <AddOrgContainer>
+      <h3>{editOrg ? "Edit Organization" : "Add Organization"}</h3>
+      <AddOrgForm onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <SubmitButton type="submit" disabled={loading}>
+          {editOrg ? "Update Organization" : "Add Organization"}
+        </SubmitButton>
+      </AddOrgForm>
 
-        {/* Loading */}
-        {loading && (
-          <div className="loading-overlay">
-            <div className="spinner"></div>
-          </div>
-        )}
+      {/* Loading */}
+      {loading && (
+        <LoadingOverlay>
+          <Spinner />
+        </LoadingOverlay>
+      )}
 
-        {/* Error Modal */}
-        {error && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>Error</h3>
-              <p>{error}</p>
-              <button className="close-btn" onClick={() => setError("")}>
-                Close
-              </button>
-            </div>
-          </div>
-        )}
+      {/* Error Modal */}
+      {error && (
+        <ModalOverlay>
+          <Modal>
+            <h3>Error</h3>
+            <p>{error}</p>
+            <CloseButton onClick={() => setError("")}>Close</CloseButton>
+          </Modal>
+        </ModalOverlay>
+      )}
 
-        {/* Success Modal */}
-        {success && (
-          <div className="modal-overlay">
-            <div className="modal success-modal">
-              <h3>Success</h3>
-              <p>{success}</p>
-              <button className="close-btn" onClick={() => setSuccess("")}>
-                Close
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Success Modal */}
+      {success && (
+        <ModalOverlay>
+          <Modal className="success-modal">
+            <h3>Success</h3>
+            <p>{success}</p>
+            <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+          </Modal>
+        </ModalOverlay>
+      )}
+    </AddOrgContainer>
   );
 }
 

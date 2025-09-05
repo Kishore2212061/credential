@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import templateRoutes from "./routes/templateRoutes.js";
 import semesterRoutes from "./routes/semesterRoutes.js";
 import credentialRoutes from "./routes/credentialRoutes.js";
+import verifierRoutes from "./routes/verifierRoutes.js";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use("/auth", authRoutes);
 app.use("/template", templateRoutes);
 app.use("/semester", semesterRoutes);
 app.use("/credential", credentialRoutes);
+app.use("/verifier", verifierRoutes)
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log("MongoDB connected");

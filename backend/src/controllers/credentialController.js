@@ -6,7 +6,7 @@ import User from "../models/User.js";
 import Organization from "../models/Organization.js";
 import path from "path";
 import fs from "fs/promises";
-
+import puppeteer from "puppeteer";
 import { renderPDF } from "../services/pdfService.js";
 import { sha256OfFile, fileBytes } from "../services/hashService.js";
 import { uploadBytesToIPFS } from "../services/ipfsService.js"; 
@@ -15,11 +15,14 @@ import {
   chainIssue,
   chainAddVersion,
   getIssuerAddress,
+  chainGetVersion
 } from "../services/chainService.js";
-import { transporter } from "../utils/mailer.js"; // ⬅️ import nodemailer transporter
+import { transporter } from "../utils/mailer.js"; 
 
 export const issueCredential = async (req, res) => {
   try {
+    console.log("✅ Starting credential issuance...");
+
     if (req.user.role !== "organization") {
       return res.status(403).json({ message: "Forbidden" });
     }
@@ -53,16 +56,12 @@ export const issueCredential = async (req, res) => {
       },
       candidate: {
         name: profile?.name || "",
-        degreeBranch: `${profile?.degree || ""} ${
-          profile?.branch ? profile.branch.toUpperCase() : ""
-        }`.trim(),
+        degreeBranch: `${profile?.degree || ""} ${profile?.branch ? profile.branch.toUpperCase() : ""}`.trim(),
         mode: profile?.mode || "",
         registerNo: profile?.registerNo || "",
         monthYearOfExam: sem.monthYearOfExam || "",
         regulations: profile?.regulations || "",
-        dateOfPublication: sem.dateOfPublication
-          ? new Date(sem.dateOfPublication).toLocaleDateString("en-GB")
-          : "",
+        dateOfPublication: sem.dateOfPublication ? new Date(sem.dateOfPublication).toLocaleDateString("en-GB") : "",
       },
       table: {
         semesterNumber: sem.semesterNumber,
@@ -76,107 +75,134 @@ export const issueCredential = async (req, res) => {
         })),
       },
       result: {
-        gpa: sem.gpa || "",   
-        cgpa: sem.cgpa || ""  
+        gpa: sem.gpa || "",
+        cgpa: sem.cgpa || ""
       }
     };
 
     const tempDir = path.join(process.cwd(), "temp");
     await fs.mkdir(tempDir, { recursive: true });
-    const tempPath = path.join(tempDir, `credential_${Date.now()}.pdf`);
 
-    await renderPDF({ html: tpl.html, css: tpl.css, data, outPath: tempPath });
+    const tempPdfPath = path.join(tempDir, `credential_${Date.now()}.pdf`);
+    console.log("📄 Rendering PDF to:", tempPdfPath);
+    await renderPDF({ html: tpl.html, css: tpl.css, data, outPath: tempPdfPath });
 
-    const hash = await sha256OfFile(tempPath);
-    const pdfBytes = await fileBytes(tempPath);
-    const ipfsCid = await uploadBytesToIPFS(pdfBytes);
+    // Wait for file flush
+    await new Promise(resolve => setTimeout(resolve, 100));
 
-    const issuerAddr = getIssuerAddress(); 
-    const seriesId = computeSeriesId({
-      issuer: issuerAddr,
-      userId,
-      semesterId: semesterNumber,   
-      templateId
-    });
+    console.log("🔑 Computing content hash...");
+    const contentHash = await sha256OfFile(tempPdfPath);
 
+    console.log("📄 Reading PDF bytes...");
+    const pdfBytes = await fileBytes(tempPdfPath);
+
+    console.log("🖼 Generating PNG preview using Puppeteer...");
+    const previewPath = path.join(tempDir, `preview_${Date.now()}.png`);
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    const renderedHtml = await renderPDF({ html: tpl.html, css: tpl.css, data, returnHtml: true });
+
+    const bodyHandle = await page.$("body");
+    const { height } = await bodyHandle.boundingBox();
+    await page.setViewport({ width: 794, height: Math.ceil(height) });
+    await bodyHandle.dispose();
+    await page.setContent(renderedHtml, { waitUntil: 'networkidle0' });
+    await page.screenshot({ path: previewPath, fullPage: true });
+
+    await browser.close();
+
+    const previewBytes = await fs.readFile(previewPath);
+
+    console.log("🌐 Uploading preview to IPFS...");
+    const previewCid = await uploadBytesToIPFS(previewBytes);
+
+    console.log("🌐 Uploading PDF to IPFS...");
+    const pdfCid = await uploadBytesToIPFS(pdfBytes);
+
+    console.log("📝 Creating metadata and uploading...");
+    const metadata = {
+      name: `${org.name} - ${tpl.title || tpl.name} (Sem ${sem.semesterNumber})`,
+      description: `Official academic credential for ${profile?.name || "Student"} issued by ${org.name}.`,
+      image: `https://ipfs.io/ipfs/${previewCid}`,      
+      external_url: `https://ipfs.io/ipfs/${pdfCid}`,   
+      attributes: [
+        { trait_type: "Degree", value: profile?.degree || "" },
+        { trait_type: "Branch", value: profile?.branch || "" },
+        { trait_type: "Semester", value: sem.semesterNumber },
+        { trait_type: "CGPA", value: sem.cgpa || "" }
+      ]
+    };
+
+      const metadataBytes = Buffer.from(JSON.stringify(metadata));
+    const metadataCid = await uploadBytesToIPFS(metadataBytes);
+
+    console.log("⛓ Issuing NFT on chain...");
+    const issuerAddr = getIssuerAddress();
+    const seriesId = computeSeriesId({ issuer: issuerAddr, userId, semesterId: semesterNumber, templateId });
     const latest = await Credential.findOne({ seriesId }).sort({ version: -1 });
-
-    if (!subjectWallet && !user.wallet) {
-      throw new Error("❌ Subject must have a wallet address to issue credential");
-    }
+    const subjectAddr = subjectWallet || user.wallet;
+    if (!subjectAddr) throw new Error("❌ Subject must have a wallet address");
 
     let txHash, newVersion;
+    const tokenURI = `https://ipfs.io/ipfs/${pdfCid}`;
+
     if (!latest) {
       newVersion = 0;
-      const { txHash: hashIssued } = await chainIssue({
-        seriesId,
-        subject: subjectWallet || user.wallet,
-        cid: ipfsCid,
-        contentHash: hash,
-      });
-      txHash = hashIssued;
+      console.log(subjectAddr)
+      const { txHash: issuedTx } = await chainIssue({ seriesId, subject: subjectAddr, metadataCid: tokenURI, contentHash });
+      txHash = issuedTx;
     } else {
       newVersion = latest.version + 1;
-      const { txHash: hashUpgraded } = await chainAddVersion({
-        seriesId,
-        cid: ipfsCid,
-        contentHash: hash,
-      });
-      txHash = hashUpgraded;
+      const { txHash: upgradedTx } = await chainAddVersion({ seriesId, metadataCid: tokenURI, contentHash });
+      txHash = upgradedTx;
     }
 
+    console.log("💾 Saving credential to database...");
     const credential = await Credential.create({
       user: userId,
       organization: req.user.id,
       semester: sem._id,
       template: tpl._id,
-      pdfPath: tempPath,
-      cid: ipfsCid,
-      contentHash: hash,
+      pdfPath: tempPdfPath,
+      cid: `https://ipfs.io/ipfs/${pdfCid}`,
+      contentHash,
       seriesId,
       version: newVersion,
       latestVersion: newVersion,
       chain: {
         network: process.env.CHAIN_NAME || "sepolia",
-        contract: process.env.REGISTRY_CONTRACT || "0x41143621267f3857436D1aefE8090Fec3500f363",
+        contract: "0xc5f035Dbe14d700bD57F9B08D92105629C9ff66b",
         txHash,
         revoked: false,
       },
-      subjectWallet: subjectWallet || user.wallet,
+      subjectWallet: subjectAddr,
+      metadataCid
     });
 
     await Credential.updateMany({ seriesId }, { $set: { latestVersion: newVersion } });
 
-    // ✅ send email with PDF attached
+    console.log("✉ Sending credential via email...");
     await transporter.sendMail({
-      from: '"Organization Admin" <do.not.reply.to.this.17@gmail.com>',
+      from: `"${org.name} Admin" <${process.env.MAIL_FROM || "do.not.reply@example.com"}>`,
       to: user.email,
       subject: "Your Academic Credential",
       text: `Hello ${profile?.name || "Student"},\n\nAttached is your issued academic credential.\n\nBest regards,\n${org.name}`,
-      attachments: [
-        {
-          filename: "credential.pdf",
-          path: tempPath, // attach file before deleting
-        },
-      ],
+      attachments: [{ filename: "credential.pdf", path: tempPdfPath }]
     });
 
-    // delete local file after sending email
-    await fs.unlink(tempPath);
+    // Cleanup
+    try { await fs.unlink(tempPdfPath); } catch {}
+    try { await fs.unlink(previewPath); } catch {}
 
-    return res.status(201).json({
-      message: "✅ Credential issued successfully, emailed to user",
-      credential,
-    });
+    console.log("✅ Credential issued successfully!");
+    return res.status(201).json({ message: "Credential minted and emailed", credential, tokenURI });
+
   } catch (err) {
-    console.error("Error issuing credential:", err);
-    return res
-      .status(500)
-      .json({ message: "Error issuing credential", error: err.message });
+    console.error("❌ Error issuing credential:", err);
+    return res.status(500).json({ message: "Error issuing credential", error: err.message });
   }
 };
-
-
 
 export const listCredentials = async (req, res) => {
   try {

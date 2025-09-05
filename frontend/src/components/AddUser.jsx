@@ -1,36 +1,43 @@
-import React, { useState } from 'react';
-import { api } from '../utils/api';
+import React, { useState } from "react";
+import { api } from "../utils/api";
+import {
+  AddUserContainer,
+  AddUserForm,
+  Loader,
+  Modal,
+  ModalContent,
+} from "./AddUser.styles";
 
 function AddUser({ onAdd }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      await api.post('/organization/users', { email, password });
-      setEmail('');
-      setPassword('');
-      setSuccess('User added successfully!');
+      await api.post("/organization/users", { email, password });
+      setEmail("");
+      setPassword("");
+      setSuccess("User added successfully!");
       onAdd();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add user');
+      setError(err.response?.data?.message || "Failed to add user");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
+    <AddUserContainer>
       <h4>Add User</h4>
-      <form className="add-user-form" onSubmit={handleSubmit}>
+      <AddUserForm onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder="Email"
@@ -45,29 +52,31 @@ function AddUser({ onAdd }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit" disabled={loading}>Add User</button>
-      </form>
+        <button type="submit" disabled={loading}>
+          Add User
+        </button>
+      </AddUserForm>
 
-      {loading && <div className="loader"></div>}
+      {loading && <Loader />}
 
       {error && (
-        <div className="modal">
-          <div className="modal-content error">
+        <Modal>
+          <ModalContent className="error">
             <p>{error}</p>
-            <button onClick={() => setError('')}>Close</button>
-          </div>
-        </div>
+            <button onClick={() => setError("")}>Close</button>
+          </ModalContent>
+        </Modal>
       )}
 
       {success && (
-        <div className="modal">
-          <div className="modal-content success">
+        <Modal>
+          <ModalContent className="success">
             <p>{success}</p>
-            <button onClick={() => setSuccess('')}>Close</button>
-          </div>
-        </div>
+            <button onClick={() => setSuccess("")}>Close</button>
+          </ModalContent>
+        </Modal>
       )}
-    </div>
+    </AddUserContainer>
   );
 }
 

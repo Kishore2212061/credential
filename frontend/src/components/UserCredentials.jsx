@@ -1,20 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
+import {
+  CredContainer,
+  CredTable,
+  VerifyBtn,
+  Status,
+  PDFLink,
+  ModalOverlay,
+  Modal,
+  ChainDetails,
+  EmptyCredentials,
+  VerificationStatus,
+} from './UserCredential.styles';
 
-function UserCredential({ userId }) {
+function UserCredential({ userId, mode = "user"}) {
   const [credentials, setCredentials] = useState([]);
   const [verifications, setVerifications] = useState({});
   const [modal, setModal] = useState({ type: '', message: '', open: false, cred: null });
+  console.log(mode)
 
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) return;
-      try {
-        const credRes = await api.get(`/credential/${userId}`);
-        setCredentials(credRes.data || []);
+            try {
+        let res;
+        if (mode === "user") {
+         res = await api.get(`/credential/${userId}`);
+        } else {
+          const token = localStorage.getItem("verifierToken");
+          res = await api.get(`/verifier/students/${userId}/credentials?token=${token}`);
+        }
+        setCredentials(res.data || []);
       } catch (err) {
-        console.error('Failed to fetch credentials:', err);
-        setModal({ type: 'error', message: 'Failed to load credentials', open: true });
+        console.error("Failed to fetch credentials:", err);
+        setModal({ type: "error", message: "Failed to load credentials", open: true });
       }
     };
     fetchData();
@@ -24,7 +43,15 @@ function UserCredential({ userId }) {
     try {
       setVerifications((prev) => ({ ...prev, [credId]: { loading: true } }));
 
-      const res = await api.get(`/credential/${credId}/verify`);
+      let res;
+      if (mode === "user") {
+        res = await api.get(`/credential/${credId}/verify`);
+      } else {
+        const token = localStorage.getItem("verifierToken");
+        res = await api.get(`/verifier/students/${credId}/verify?token=${token}`);
+      }
+
+
 
       setVerifications((prev) => ({
         ...prev,
@@ -47,9 +74,9 @@ function UserCredential({ userId }) {
   };
 
   return (
-    <div className="cred-container">
+    <CredContainer>
       <h4>Credentials</h4>
-      <table className="cred-table">
+      <CredTable>
         <thead>
           <tr>
             <th>User</th>
@@ -70,46 +97,51 @@ function UserCredential({ userId }) {
                   <td>{cred.template?.name || 'N/A'}</td>
                   <td>
                     {cred.cid ? (
-                      <a
-                        href={`https://ipfs.io/ipfs/${cred.cid}`}
+                      <PDFLink
+                        href={cred.cid}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         View PDF
-                      </a>
+                      </PDFLink>
                     ) : (
                       'N/A'
                     )}
                   </td>
                   <td>
-                    <button
-                      className="verify-btn"
-                      onClick={() => handleVerify(cred._id)}
-                      disabled={v.loading}
-                    >
-                      {v.loading ? 'Verifying...' : 'Verify'}
-                    </button>
-                    {v.verified === true && <span className="status valid">✔ Valid</span>}
-                    {v.verified === false && <span className="status invalid">✖ Invalid</span>}
+                    <VerificationStatus>
+                      <VerifyBtn
+                        onClick={() => handleVerify(cred._id)}
+                        disabled={v.loading}
+                      >
+                        {v.loading ? 'Verifying...' : 'Verify'}
+                      </VerifyBtn>
+                      {v.verified === true && <Status className="valid">✔ Valid</Status>}
+                      {v.verified === false && <Status className="invalid">✖ Invalid</Status>}
+                    </VerificationStatus>
                   </td>
                 </tr>
               );
             })
           ) : (
             <tr>
-              <td colSpan="5">No credentials found</td>
+              <td colSpan="5">
+                <EmptyCredentials>
+                  <p>No credentials found</p>
+                </EmptyCredentials>
+              </td>
             </tr>
           )}
         </tbody>
-      </table>
+      </CredTable>
 
       {/* Modal */}
       {modal.open && modal.cred && (
-        <div className="modal-overlay">
-          <div className={`modal ${modal.type}`}>
+        <ModalOverlay>
+          <Modal className={modal.type}>
             <p>{modal.message}</p>
 
-            <div className="chain-details">
+            <ChainDetails>
               <h4>On-Chain Details</h4>
               <p><strong>Series ID:</strong> {modal.cred.seriesId}</p>
               <p><strong>Version:</strong> {modal.cred.version}</p>
@@ -128,13 +160,13 @@ function UserCredential({ userId }) {
               <p><strong>Subject Wallet:</strong> {modal.cred.onChain?.subject}</p>
               <p><strong>Revoked:</strong> {modal.cred.onChain?.revoked ? "Yes ❌" : "No ✅"}</p>
               <p><strong>Issued At:</strong> {new Date(modal.cred.onChain?.issuedAt * 1000).toLocaleString()}</p>
-            </div>
+            </ChainDetails>
 
             <button onClick={() => setModal({ ...modal, open: false })}>Close</button>
-          </div>
-        </div>
+          </Modal>
+        </ModalOverlay>
       )}
-    </div>
+    </CredContainer>
   );
 }
 

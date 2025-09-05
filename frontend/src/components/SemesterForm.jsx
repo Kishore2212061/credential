@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
+import {
+  SemesterContainer,
+  SemesterForm as StyledForm,
+  FormRow,
+  FormGroup,
+  Label,
+  Input,
+  Select,
+  SubjectSection,
+  SubjectRow,
+  SubjectInput,
+  RemoveButton,
+  AddSubjectButton,
+  SubmitButton,
+  Loader,
+  Modal,
+  ModalContent,
+} from "./SemesterForm.styles";
 
 function SemesterForm() {
   const [users, setUsers] = useState([]);
@@ -50,13 +68,7 @@ function SemesterForm() {
       ...form,
       subjects: [
         ...form.subjects,
-        {
-          subjectCode: "",
-          subjectTitle: "",
-          credits: "",
-          grade: "",
-          result: "",
-        },
+        { subjectCode: "", subjectTitle: "", credits: "", grade: "", result: "" },
       ],
     });
   };
@@ -75,13 +87,7 @@ function SemesterForm() {
         monthYearOfExam: "",
         dateOfPublication: "",
         subjects: [
-          {
-            subjectCode: "",
-            subjectTitle: "",
-            credits: "",
-            grade: "",
-            result: "",
-          },
+          { subjectCode: "", subjectTitle: "", credits: "", grade: "", result: "" },
         ],
         gpa: "",
         cgpa: "",
@@ -95,137 +101,156 @@ function SemesterForm() {
   };
 
   return (
-    <div>
+    <SemesterContainer>
       <h4>Add/Update Semester</h4>
-      <form className="semester-form" onSubmit={handleSubmit}>
-        <select
-          name="userId"
-          value={form.userId}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select User</option>
-          {users.map((user) => (
-            <option key={user._id} value={user._id}>
-              {user.email}
-            </option>
-          ))}
-        </select>
+      <StyledForm onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label>User</Label>
+          <Select name="userId" value={form.userId} onChange={handleChange} required>
+            <option value="">Select User</option>
+            {users.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.email}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
 
-        <input
-          type="number"
-          name="semesterNumber"
-          placeholder="Semester Number"
-          value={form.semesterNumber}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          type="text"
-          name="monthYearOfExam"
-          placeholder="Month & Year (e.g., NOV. 2024)"
-          value={form.monthYearOfExam}
-          onChange={handleChange}
-        />
-
-        <input
-          type="date"
-          name="dateOfPublication"
-          value={form.dateOfPublication}
-          onChange={handleChange}
-          required
-        />
-
-        {form.subjects.map((subject, index) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <input
-              type="text"
-              name="subjectCode"
-              placeholder="Subject Code"
-              value={subject.subjectCode}
-              onChange={(e) => handleChange(e, index)}
-            />
-            <input
-              type="text"
-              name="subjectTitle"
-              placeholder="Subject Title"
-              value={subject.subjectTitle}
-              onChange={(e) => handleChange(e, index)}
-            />
-            <input
+        <FormRow>
+          <FormGroup>
+            <Label>Semester Number</Label>
+            <Input
               type="number"
-              name="credits"
-              placeholder="Credits"
-              value={subject.credits}
-              onChange={(e) => handleChange(e, index)}
+              name="semesterNumber"
+              placeholder="Semester Number"
+              value={form.semesterNumber}
+              onChange={handleChange}
+              required
             />
-            <input
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Month & Year of Exam</Label>
+            <Input
               type="text"
-              name="grade"
-              placeholder="Grade"
-              value={subject.grade}
-              onChange={(e) => handleChange(e, index)}
+              name="monthYearOfExam"
+              placeholder="NOV. 2024"
+              value={form.monthYearOfExam}
+              onChange={handleChange}
             />
-            <input
-              type="text"
-              name="result"
-              placeholder="Result"
-              value={subject.result}
-              onChange={(e) => handleChange(e, index)}
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Date of Publication</Label>
+            <Input
+              type="date"
+              name="dateOfPublication"
+              value={form.dateOfPublication}
+              onChange={handleChange}
+              required
             />
-            {form.subjects.length > 1 && (
-              <button type="button" onClick={() => removeSubject(index)}>
-                Remove
-              </button>
-            )}
-          </div>
-        ))}
+          </FormGroup>
+        </FormRow>
 
-        <button type="button" onClick={addSubject}>
-          Add Subject
-        </button>
+        <SubjectSection>
+          <h5>Subjects</h5>
+          {form.subjects.map((subject, index) => (
+            <SubjectRow key={index}>
+              <SubjectInput
+                type="text"
+                name="subjectCode"
+                placeholder="Subject Code"
+                value={subject.subjectCode}
+                onChange={(e) => handleChange(e, index)}
+              />
+              <SubjectInput
+                type="text"
+                name="subjectTitle"
+                placeholder="Subject Title"
+                value={subject.subjectTitle}
+                onChange={(e) => handleChange(e, index)}
+              />
+              <SubjectInput
+                type="number"
+                name="credits"
+                placeholder="Credits"
+                value={subject.credits}
+                onChange={(e) => handleChange(e, index)}
+              />
+              <SubjectInput
+                type="text"
+                name="grade"
+                placeholder="Grade"
+                value={subject.grade}
+                onChange={(e) => handleChange(e, index)}
+              />
+              <SubjectInput
+                type="text"
+                name="result"
+                placeholder="Result"
+                value={subject.result}
+                onChange={(e) => handleChange(e, index)}
+              />
+              {form.subjects.length > 1 && (
+                <RemoveButton type="button" onClick={() => removeSubject(index)}>
+                  ×
+                </RemoveButton>
+              )}
+            </SubjectRow>
+          ))}
+          <AddSubjectButton type="button" onClick={addSubject}>
+            Add Subject
+          </AddSubjectButton>
+        </SubjectSection>
 
-        <input
-          type="number"
-          name="gpa"
-          placeholder="GPA"
-          value={form.gpa}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="cgpa"
-          placeholder="CGPA"
-          value={form.cgpa}
-          onChange={handleChange}
-        />
+        <FormRow>
+          <FormGroup>
+            <Label>GPA</Label>
+            <Input
+              type="number"
+              name="gpa"
+              placeholder="GPA"
+              value={form.gpa}
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>CGPA</Label>
+            <Input
+              type="number"
+              name="cgpa"
+              placeholder="CGPA"
+              value={form.cgpa}
+              onChange={handleChange}
+            />
+          </FormGroup>
+        </FormRow>
 
-        <button type="submit" disabled={loading}>
+        <SubmitButton type="submit" disabled={loading}>
           Submit Semester
-        </button>
-      </form>
+        </SubmitButton>
+      </StyledForm>
 
-      {loading && <div className="loader"></div>}
+      {loading && <Loader />}
 
       {error && (
-        <div className="modal">
-          <div className="modal-content error">
+        <Modal>
+          <ModalContent className="error">
             <p>{error}</p>
             <button onClick={() => setError("")}>Close</button>
-          </div>
-        </div>
+          </ModalContent>
+        </Modal>
       )}
 
       {success && (
-        <div className="modal">
-          <div className="modal-content success">
+        <Modal>
+          <ModalContent className="success">
             <p>{success}</p>
             <button onClick={() => setSuccess("")}>Close</button>
-          </div>
-        </div>
+          </ModalContent>
+        </Modal>
       )}
-    </div>
+    </SemesterContainer>
   );
 }
 

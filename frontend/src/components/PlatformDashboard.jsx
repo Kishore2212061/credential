@@ -2,6 +2,24 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
 import AddOrganization from "./AddOrganization";
+import {
+  DashboardWrapper,
+  Sidebar,
+  SidebarTitle,
+  SidebarMenu,
+  SidebarMenuItem,
+  MainContent,
+  SearchInput,
+  OrgTable,
+  LoadingOverlay,
+  Spinner,
+  ModalOverlay,
+  Modal,
+  ModalActions,
+  CloseButton,
+  CancelButton,
+  DeleteConfirmButton
+} from "./PlatformDashboard.styles";
 
 function PlatformDashboard() {
   const [organizations, setOrganizations] = useState([]);
@@ -71,34 +89,34 @@ function PlatformDashboard() {
   };
 
   return (
-    <div className="dashboard-wrapper">
+    <DashboardWrapper>
       {/* Sidebar */}
-      <aside className="sidebar">
-        <h2 className="sidebar-title">Platform Dashboard</h2>
-        <ul className="sidebar-menu">
-          <li
-            className={`sidebar-menu-item ${activeTab === "list" ? "active" : ""}`}
+      <Sidebar>
+        <SidebarTitle>Platform Dashboard</SidebarTitle>
+        <SidebarMenu>
+          <SidebarMenuItem
+            className={activeTab === "list" ? "active" : ""}
             onClick={() => {
               setActiveTab("list");
               setEditOrg(null);
             }}
           >
             Organization List
-          </li>
-          <li
-            className={`sidebar-menu-item ${activeTab === "add" ? "active" : ""}`}
+          </SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "add" ? "active" : ""}
             onClick={() => {
               setActiveTab("add");
               setEditOrg(null);
             }}
           >
             Add Organization
-          </li>
-        </ul>
-      </aside>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </Sidebar>
 
       {/* Main Content */}
-      <main className="main-content">
+      <MainContent>
         {activeTab === "add" ? (
           <AddOrganization
             onAdd={fetchOrganizations}
@@ -108,15 +126,14 @@ function PlatformDashboard() {
         ) : (
           <div>
             <h3>Organizations</h3>
-            <input
-              className="search-input"
+            <SearchInput
               type="text"
               placeholder="Search by name or email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
 
-            <table className="org-table">
+            <OrgTable>
               <thead>
                 <tr>
                   <th>Name</th>
@@ -144,62 +161,54 @@ function PlatformDashboard() {
                   </tr>
                 )}
               </tbody>
-            </table>
+            </OrgTable>
           </div>
         )}
-      </main>
+      </MainContent>
 
       {/* Loading Overlay */}
       {loading && (
-        <div className="loading-overlay">
-          <div className="spinner"></div>
-        </div>
+        <LoadingOverlay>
+          <Spinner />
+        </LoadingOverlay>
       )}
 
       {/* Error Modal */}
       {error && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <ModalOverlay>
+          <Modal>
             <h3>Error</h3>
             <p>{error}</p>
-            <button className="close-btn" onClick={() => setError("")}>
-              Close
-            </button>
-          </div>
-        </div>
+            <CloseButton onClick={() => setError("")}>Close</CloseButton>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {/* Success Modal */}
       {success && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <ModalOverlay>
+          <Modal>
             <h3>Success</h3>
             <p>{success}</p>
-            <button className="close-btn" onClick={() => setSuccess("")}>
-              Close
-            </button>
-          </div>
-        </div>
+            <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {/* Delete Confirmation Modal */}
       {deleteOrg && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <ModalOverlay>
+          <Modal>
             <h3>Confirm Delete</h3>
             <p>Are you sure you want to delete "{deleteOrg.name}"?</p>
-            <div className="modal-actions">
-              <button className="cancel-btn" onClick={handleCancelDelete}>
-                Cancel
-              </button>
-              <button className="delete-confirm-btn" onClick={handleDelete}>
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+            <ModalActions>
+              <CancelButton onClick={handleCancelDelete}>Cancel</CancelButton>
+              <DeleteConfirmButton onClick={handleDelete}>Delete</DeleteConfirmButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
       )}
-    </div>
+    </DashboardWrapper>
   );
 }
 

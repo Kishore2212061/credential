@@ -12,30 +12,25 @@ export const addUser = async (req, res) => {
 
     const { email, password } = req.body;
 
-    // check if already exists
+    // Check if user already exists
     const existing = await User.findOne({ email });
     if (existing) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // hash password
+    // Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // ✅ generate wallet
-    const wallet = ethers.Wallet.createRandom();
-
-    // save user with wallet
+    // Save user (no wallet)
     const user = new User({
       email,
       password: hashed,
       organization: req.user.id,
-      wallet: wallet.address,
-      privateKey: wallet.privateKey,
     });
 
     await user.save();
 
-    // ✅ send password by email
+    // Send password by email
     await transporter.sendMail({
       from: '"Organization Admin" <do.not.reply.to.this.17@gmail.com>',
       to: email,
@@ -46,7 +41,6 @@ export const addUser = async (req, res) => {
     res.json({
       id: user._id,
       email: user.email,
-      wallet: user.wallet,
       message: "User created and password sent via email",
     });
   } catch (e) {
