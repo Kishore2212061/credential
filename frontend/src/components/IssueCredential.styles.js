@@ -23,35 +23,37 @@ const shimmer = keyframes`
 export const IssueCredentialContainer = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   animation: ${fadeIn} 0.6s ease-out;
   max-width: 600px;
+  border: 1px solid #f1f5f9;
   
   h3 {
-    color: #2d3748;
-    margin: 0 0 30px 0;
+    color: #1f2937;
+    margin: 0 0 32px 0;
     font-size: 24px;
     font-weight: 700;
     text-align: center;
     position: relative;
+    letter-spacing: -0.025em;
     
     &::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -12px;
       left: 50%;
       transform: translateX(-50%);
       width: 80px;
       height: 3px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
       border-radius: 2px;
     }
   }
   
   @media (max-width: 768px) {
-    padding: 20px;
-    margin: 0 10px;
+    padding: 24px 20px;
+    margin: 0 16px;
   }
 `;
 
@@ -68,7 +70,7 @@ export const FormGroup = styled.div`
 `;
 
 export const Label = styled.label`
-  color: #4a5568;
+  color: #374151;
   font-weight: 600;
   font-size: 14px;
   text-transform: uppercase;
@@ -76,77 +78,79 @@ export const Label = styled.label`
 `;
 
 export const Select = styled.select`
-  padding: 14px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  padding: 16px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
-  transition: all 0.3s ease;
-  background: #f7fafc;
+  transition: all 0.2s ease;
+  background: #f9fafb;
   cursor: pointer;
   
   &:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #3b82f6;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     transform: translateY(-1px);
   }
   
-  &:hover {
-    border-color: #cbd5e0;
+  &:hover:not(:focus) {
+    border-color: #d1d5db;
   }
   
   option {
-    padding: 10px;
+    padding: 12px;
     background: white;
-    color: #4a5568;
+    color: #374151;
   }
 `;
 
 export const Input = styled.input`
-  padding: 14px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  padding: 16px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
-  transition: all 0.3s ease;
-  background: #f7fafc;
+  transition: all 0.2s ease;
+  background: #f9fafb;
   
   &:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #3b82f6;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     transform: translateY(-1px);
   }
   
-  &:hover {
-    border-color: #cbd5e0;
+  &:hover:not(:focus) {
+    border-color: #d1d5db;
   }
   
   &::placeholder {
-    color: #a0aec0;
+    color: #9ca3af;
   }
 `;
 
 export const SubmitButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
   border: none;
   padding: 16px 32px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 20px;
+  transition: all 0.2s ease;
+  margin-top: 24px;
   align-self: center;
   min-width: 200px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
   }
   
   &:active {
@@ -156,7 +160,8 @@ export const SubmitButton = styled.button`
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    transform: none;
     
     &::after {
       content: '';
@@ -172,47 +177,49 @@ export const SubmitButton = styled.button`
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 `;
 
 export const FormSection = styled.div`
-  padding: 20px;
-  background: #f7fafc;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  padding: 24px;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
   
   h5 {
-    color: #2d3748;
-    margin: 0 0 16px 0;
+    color: #1f2937;
+    margin: 0 0 20px 0;
     font-size: 16px;
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 8px;
+    letter-spacing: -0.025em;
     
     &::before {
       content: '📋';
-      font-size: 18px;
+      font-size: 20px;
     }
   }
 `;
 
 export const InfoCard = styled.div`
-  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
-  border: 1px solid #90cdf4;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 1px solid #93c5fd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
   
   p {
     margin: 0;
-    color: #2c5282;
+    color: #1e40af;
     font-size: 14px;
     line-height: 1.5;
     
     strong {
-      color: #1a365d;
+      color: #1e3a8a;
+      font-weight: 600;
     }
   }
 `;
@@ -220,29 +227,29 @@ export const InfoCard = styled.div`
 export const StatusIndicator = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 50px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   
   &.processing {
-    background: #fef5e7;
-    color: #d69e2e;
-    border: 1px solid #f6e05e;
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
   }
   
   &.success {
-    background: #c6f6d5;
-    color: #276749;
-    border: 1px solid #9ae6b4;
+    background: #d1fae5;
+    color: #059669;
+    border: 1px solid #34d399;
   }
   
   &.error {
-    background: #fed7d7;
-    color: #c53030;
-    border: 1px solid #feb2b2;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #f87171;
   }
 `;

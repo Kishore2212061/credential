@@ -35,28 +35,29 @@ const shimmer = keyframes`
 export const AppContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
   color: #1e293b;
   line-height: 1.6;
+  font-size: 14px;
 `;
 
 export const Navbar = styled.nav`
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid #e2e8f0;
-  padding: 0 24px;
+  padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 72px;
   animation: ${slideDown} 0.4s ease-out;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   
   @media (max-width: 768px) {
-    padding: 0 16px;
+    padding: 0 20px;
     height: 64px;
   }
 `;
@@ -86,8 +87,8 @@ export const LogoutButton = styled.button`
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 12px 24px;
+  border-radius: 50px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -110,7 +111,7 @@ export const LogoutButton = styled.button`
   }
   
   @media (max-width: 768px) {
-    padding: 10px 16px;
+    padding: 10px 20px;
     font-size: 13px;
   }
 `;
@@ -122,22 +123,23 @@ export const LoadingOverlay = styled.div`
   right: 0;
   bottom: 0;
   background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   animation: ${fadeIn} 0.2s ease-out;
 `;
 
 export const LoadingContainer = styled.div`
   background: white;
-  padding: 32px;
+  padding: 40px;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   animation: ${fadeIn} 0.3s ease-out 0.1s both;
   border: 1px solid #e2e8f0;
+  min-width: 200px;
 `;
 
 export const Spinner = styled.div`
@@ -147,7 +149,7 @@ export const Spinner = styled.div`
   border-top: 3px solid #3b82f6;
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
-  margin: 0 auto 16px;
+  margin: 0 auto 20px;
 `;
 
 export const LoadingText = styled.p`
@@ -164,13 +166,13 @@ export const ModalOverlay = styled.div`
   right: 0;
   bottom: 0;
   background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   animation: ${fadeIn} 0.2s ease-out;
-  padding: 16px;
+  padding: 20px;
 `;
 
 export const Modal = styled.div`
@@ -188,19 +190,20 @@ export const Modal = styled.div`
 export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 24px;
 `;
 
 export const ModalIcon = styled.span`
-  font-size: 24px;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  font-size: 28px;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  flex-shrink: 0;
 `;
 
 export const ModalTitle = styled.h3`
@@ -213,7 +216,7 @@ export const ModalTitle = styled.h3`
 
 export const ModalText = styled.p`
   color: #64748b;
-  margin: 0 0 24px 0;
+  margin: 0 0 32px 0;
   line-height: 1.6;
   font-size: 15px;
 `;
@@ -222,7 +225,7 @@ export const ModalActions = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 32px;
 `;
 
 export const CloseButton = styled.button`
@@ -230,7 +233,7 @@ export const CloseButton = styled.button`
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 12px;
+  border-radius: 50px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
