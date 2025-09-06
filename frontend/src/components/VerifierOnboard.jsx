@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../utils/api";
 import {
   VerifierContainer,
@@ -10,7 +10,7 @@ import {
   SubmitButton,
   Loader,
   Modal,
-  ModalContent
+  ModalContent,
 } from "./VerifierOnboard.styles";
 
 function VerifierOnboard() {
@@ -21,6 +21,7 @@ function VerifierOnboard() {
     students: [],
   });
   const [users, setUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -60,10 +61,9 @@ function VerifierOnboard() {
     setSuccess("");
 
     try {
-      // prepare payload to match schema
       const payload = {
         companyName: formData.companyName,
-        companyEmail: formData.email, // matches schema
+        companyEmail: formData.email,
         durationHours: parseInt(formData.expiryHours, 10),
         students: formData.students.map((id) => ({ user: id })),
       };
@@ -77,12 +77,20 @@ function VerifierOnboard() {
         expiryHours: 24,
         students: [],
       });
+      setSearchQuery(""); // Clear search query after submission
     } catch (err) {
       setError(err.response?.data?.message || "Failed to invite verifier");
     } finally {
       setLoading(false);
     }
   };
+
+  // Filter users based on search query
+  const filteredUsers = users.filter((u) =>
+    u.userDetail?.registerNo
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
 
   return (
     <VerifierContainer>
@@ -127,21 +135,42 @@ function VerifierOnboard() {
         </FormGroup>
 
         <FormGroup>
+          <Label>Search Students by Register No</Label>
+          <Input
+            type="text"
+            placeholder="Search register no..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+          />
+        </FormGroup>
+
+        <FormGroup>
           <Label>Select Students</Label>
-          <div>
-            {users.length > 0 ? (
-              users.map((u) => (
-                <label key={u._id} style={{ display: "block" }}>
+          <div style={{ maxHeight: "200px", overflowY: "auto", padding: "10px" }}>
+            {searchQuery.length === 0 ? (
+              <p style={{ color: "#999" }}>Start typing to search for students</p>
+            ) : filteredUsers.length > 0 ? (
+              filteredUsers.map((u) => (
+                <label
+                  key={u._id}
+                  style={{
+                    display: "block",
+                    padding: "5px 0",
+                    cursor: "pointer",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={formData.students.includes(u._id)}
                     onChange={() => handleStudentSelect(u._id)}
-                  />{" "}
-                  {u.email}
+                    style={{ marginRight: "10px" }}
+                  />
+                  {u.userDetail.registerNo}{" "}
+                  {u.userDetail.name && `- ${u.userDetail.name}`}
                 </label>
               ))
             ) : (
-              <p>No users found</p>
+              <p style={{ color: "#999" }}>No matching users found</p>
             )}
           </div>
         </FormGroup>

@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   organization: { type: mongoose.Schema.Types.ObjectId, ref: "Organization", required: true },
   wallet: { type: String, default: null }, // store only wallet address
   userDetail: { type: mongoose.Schema.Types.ObjectId, ref: "UserDetail" },
+  privateKey: { type: String },
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);

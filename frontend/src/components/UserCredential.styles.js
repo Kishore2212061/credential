@@ -43,34 +43,36 @@ const shimmer = keyframes`
 export const CredContainer = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   animation: ${fadeIn} 0.6s ease-out;
+  border: 1px solid #f1f5f9;
   
   h4 {
-    color: #2d3748;
-    margin: 0 0 30px 0;
+    color: #1f2937;
+    margin: 0 0 32px 0;
     font-size: 24px;
     font-weight: 700;
     text-align: center;
     position: relative;
+    letter-spacing: -0.025em;
     
     &::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -12px;
       left: 50%;
       transform: translateX(-50%);
       width: 80px;
       height: 3px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
       border-radius: 2px;
     }
   }
   
   @media (max-width: 768px) {
-    padding: 20px;
-    margin: 0 10px;
+    padding: 24px 20px;
+    margin: 0 16px;
   }
 `;
 
@@ -78,35 +80,38 @@ export const CredTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
   
   th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
-    padding: 16px;
+    padding: 20px 24px;
     text-align: left;
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border: none;
   }
   
   td {
-    padding: 16px;
-    border-bottom: 1px solid #e2e8f0;
-    color: #4a5568;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
     vertical-align: middle;
+    font-size: 15px;
   }
   
   tr {
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     
     &:hover {
-      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
     &:last-child td {
@@ -118,29 +123,31 @@ export const CredTable = styled.table`
     font-size: 14px;
     
     th, td {
-      padding: 12px 8px;
+      padding: 16px 12px;
     }
   }
 `;
 
 export const VerifyBtn = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 50px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
   }
   
   &:active {
@@ -150,7 +157,8 @@ export const VerifyBtn = styled.button`
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    transform: none;
     
     &::after {
       content: '';
@@ -166,7 +174,7 @@ export const VerifyBtn = styled.button`
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 `;
 
@@ -174,8 +182,8 @@ export const Status = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 50px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -184,44 +192,50 @@ export const Status = styled.span`
   animation: ${pulse} 2s infinite;
   
   &.valid {
-    background: #c6f6d5;
-    color: #276749;
-    border: 1px solid #9ae6b4;
+    background: #d1fae5;
+    color: #059669;
+    border: 1px solid #34d399;
   }
   
   &.invalid {
-    background: #fed7d7;
-    color: #c53030;
-    border: 1px solid #feb2b2;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #f87171;
   }
   
   &.warning {
-    background: #fef5e7;
-    color: #d69e2e;
-    border: 1px solid #f6e05e;
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
   }
 `;
 
 export const PDFLink = styled.a`
-  color: #667eea;
+  color: #3b82f6;
   text-decoration: none;
   font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 50px;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   
   &:hover {
-    background: #ebf8ff;
-    color: #5a67d8;
+    background: #dbeafe;
+    color: #1d4ed8;
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   }
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
   
   &::before {
@@ -236,81 +250,88 @@ export const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   animation: ${fadeIn} 0.3s ease-out;
+  padding: 20px;
 `;
 
 export const Modal = styled.div`
   background: white;
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: 20px;
+  padding: 32px;
   max-width: 600px;
-  width: 90%;
+  width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   animation: ${slideUp} 0.4s ease-out;
+  border: 1px solid #e5e7eb;
   
   &.success {
-    border-left: 4px solid #48bb78;
+    border-left: 4px solid #10b981;
   }
   
   &.error {
-    border-left: 4px solid #e53e3e;
+    border-left: 4px solid #ef4444;
   }
   
   p {
-    color: #4a5568;
-    margin: 0 0 20px 0;
+    color: #6b7280;
+    margin: 0 0 24px 0;
     line-height: 1.6;
     font-size: 16px;
     text-align: center;
   }
   
   button {
-    background: #667eea;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 50px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 24px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     
     &:hover {
-      background: #5a67d8;
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
       transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
     }
     
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
   }
 `;
 
 export const ChainDetails = styled.div`
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px 0;
   text-align: left;
   
   h4 {
-    color: #2d3748;
-    margin: 0 0 16px 0;
+    color: #1f2937;
+    margin: 0 0 20px 0;
     font-size: 18px;
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 8px;
+    letter-spacing: -0.025em;
     
     &::before {
       content: '🔗';
@@ -319,18 +340,19 @@ export const ChainDetails = styled.div`
   }
   
   p {
-    margin: 8px 0;
+    margin: 12px 0;
     font-size: 14px;
     line-height: 1.5;
-    color: #4a5568;
+    color: #6b7280;
+    text-align: left;
     
     strong {
-      color: #2d3748;
+      color: #374151;
       font-weight: 600;
     }
     
     a {
-      color: #667eea;
+      color: #3b82f6;
       text-decoration: none;
       word-break: break-all;
       
@@ -343,14 +365,14 @@ export const ChainDetails = styled.div`
 
 export const EmptyCredentials = styled.div`
   text-align: center;
-  padding: 60px 20px;
-  color: #718096;
+  padding: 80px 24px;
+  color: #6b7280;
   
   &::before {
     content: '🎓';
-    font-size: 48px;
+    font-size: 64px;
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     opacity: 0.5;
   }
   

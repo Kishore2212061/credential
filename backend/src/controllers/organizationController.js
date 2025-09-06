@@ -10,7 +10,7 @@ export const addUser = async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    const { email, password } = req.body;
+    const { email, password, name, degree, branch, mode, registerNo, regulations } = req.body;
 
     // Check if user already exists
     const existing = await User.findOne({ email });
@@ -21,16 +21,33 @@ export const addUser = async (req, res) => {
     // Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // Save user (no wallet)
+    // Create user
     const user = new User({
       email,
       password: hashed,
       organization: req.user.id,
     });
-
     await user.save();
 
-    // Send password by email
+    // Always create a UserDetail (even if org doesn't send extra fields)
+    const detail = await UserDetail.findOneAndUpdate(
+      { user: user._id },
+      {
+        $set: {
+          user: user._id,
+          name: name || "",
+          degree: degree || "",
+          branch: branch || "",
+          mode: mode || "",
+          registerNo: registerNo || "",
+          regulations: regulations || "",
+        },
+      },
+      { upsert: true, new: true }
+    );
+
+    await User.findByIdAndUpdate(user._id, { $set: { userDetail: detail._id } });
+
     await transporter.sendMail({
       from: '"Organization Admin" <do.not.reply.to.this.17@gmail.com>',
       to: email,
@@ -41,14 +58,14 @@ export const addUser = async (req, res) => {
     res.json({
       id: user._id,
       email: user.email,
-      message: "User created and password sent via email",
+      userDetail: detail, 
+      message: "User created with UserDetail and password sent via email",
     });
   } catch (e) {
     console.error("Error adding user:", e);
     res.status(500).json({ message: e.message });
   }
 };
-
 
 export const getUsers = async (req, res) => {
   try {

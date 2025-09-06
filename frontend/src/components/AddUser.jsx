@@ -9,11 +9,24 @@ import {
 } from "./AddUser.styles";
 
 function AddUser({ onAdd }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    name: "",
+    degree: "",
+    branch: "",
+    mode: "",
+    registerNo: "",
+    regulations: "",
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,9 +35,17 @@ function AddUser({ onAdd }) {
     setSuccess("");
 
     try {
-      await api.post("/organization/users", { email, password });
-      setEmail("");
-      setPassword("");
+      await api.post("/organization/users", form);
+      setForm({
+        email: "",
+        password: "",
+        name: "",
+        degree: "",
+        branch: "",
+        mode: "",
+        registerNo: "",
+        regulations: "",
+      });
       setSuccess("User added successfully!");
       onAdd();
     } catch (err) {
@@ -40,18 +61,65 @@ function AddUser({ onAdd }) {
       <AddUserForm onSubmit={handleSubmit}>
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={handleChange}
           required
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={form.password}
+          onChange={handleChange}
           required
         />
+
+        {/* Profile fields */}
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="degree"
+          placeholder="Degree"
+          value={form.degree}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="branch"
+          placeholder="Branch"
+          value={form.branch}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="mode"
+          placeholder="Mode"
+          value={form.mode}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="registerNo"
+          placeholder="Register No"
+          value={form.registerNo}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="regulations"
+          placeholder="Regulations"
+          value={form.regulations}
+          onChange={handleChange}
+        />
+
         <button type="submit" disabled={loading}>
           Add User
         </button>

@@ -32,34 +32,36 @@ const shimmer = keyframes`
 export const CredentialListContainer = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   animation: ${fadeIn} 0.6s ease-out;
+  border: 1px solid #f1f5f9;
   
   h3 {
-    color: #2d3748;
-    margin: 0 0 30px 0;
+    color: #1f2937;
+    margin: 0 0 32px 0;
     font-size: 24px;
     font-weight: 700;
     text-align: center;
     position: relative;
+    letter-spacing: -0.025em;
     
     &::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -12px;
       left: 50%;
       transform: translateX(-50%);
       width: 80px;
       height: 3px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
       border-radius: 2px;
     }
   }
   
   @media (max-width: 768px) {
-    padding: 20px;
-    margin: 0 10px;
+    padding: 24px 20px;
+    margin: 0 16px;
   }
 `;
 
@@ -67,20 +69,22 @@ export const CredentialTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
   
   th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
-    padding: 16px;
+    padding: 20px 24px;
     text-align: left;
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
+    border: none;
     
     &::after {
       content: '';
@@ -94,10 +98,11 @@ export const CredentialTable = styled.table`
   }
   
   td {
-    padding: 16px;
-    border-bottom: 1px solid #e2e8f0;
-    color: #4a5568;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
     vertical-align: middle;
+    font-size: 15px;
     
     &:last-child {
       display: flex;
@@ -108,12 +113,12 @@ export const CredentialTable = styled.table`
   }
   
   tr {
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     
     &:hover {
-      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
     &:last-child td {
@@ -125,7 +130,7 @@ export const CredentialTable = styled.table`
     font-size: 14px;
     
     th, td {
-      padding: 12px 8px;
+      padding: 16px 12px;
     }
     
     td:last-child {
@@ -137,21 +142,25 @@ export const CredentialTable = styled.table`
 `;
 
 export const VerifyButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 50px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
   }
   
   &:active {
@@ -161,9 +170,8 @@ export const VerifyButton = styled.button`
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
-    position: relative;
-    overflow: hidden;
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    transform: none;
     
     &::after {
       content: '';
@@ -179,7 +187,7 @@ export const VerifyButton = styled.button`
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 `;
 
@@ -187,8 +195,8 @@ export const StatusBadge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 50px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -196,44 +204,50 @@ export const StatusBadge = styled.span`
   animation: ${pulse} 2s infinite;
   
   &.valid {
-    background: #c6f6d5;
-    color: #276749;
-    border: 1px solid #9ae6b4;
+    background: #d1fae5;
+    color: #059669;
+    border: 1px solid #34d399;
   }
   
   &.invalid {
-    background: #fed7d7;
-    color: #c53030;
-    border: 1px solid #feb2b2;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #f87171;
   }
   
   &.warning {
-    background: #fef5e7;
-    color: #d69e2e;
-    border: 1px solid #f6e05e;
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
   }
 `;
 
 export const PDFLink = styled.a`
-  color: #667eea;
+  color: #3b82f6;
   text-decoration: none;
   font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 50px;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   
   &:hover {
-    background: #ebf8ff;
-    color: #5a67d8;
+    background: #dbeafe;
+    color: #1d4ed8;
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   }
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
   
   &::before {
@@ -244,14 +258,14 @@ export const PDFLink = styled.a`
 
 export const EmptyState = styled.div`
   text-align: center;
-  padding: 60px 20px;
-  color: #718096;
+  padding: 80px 24px;
+  color: #6b7280;
   
   &::before {
     content: '📋';
-    font-size: 48px;
+    font-size: 64px;
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     opacity: 0.5;
   }
   
@@ -264,19 +278,21 @@ export const EmptyState = styled.div`
 
 export const LoadingRow = styled.tr`
   td {
-    padding: 20px;
+    padding: 32px;
     text-align: center;
+    color: #6b7280;
+    font-size: 15px;
     
     &::before {
       content: '';
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 2px solid #e2e8f0;
-      border-top: 2px solid #667eea;
+      border: 2px solid #f1f5f9;
+      border-top: 2px solid #3b82f6;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-right: 10px;
+      margin-right: 12px;
     }
   }
   
@@ -301,12 +317,12 @@ export const ActionGroup = styled.div`
 
 export const CredentialCard = styled.div`
   background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
   
   &:hover {
     transform: translateY(-2px);
@@ -322,36 +338,38 @@ export const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   
   h4 {
-    color: #2d3748;
+    color: #1f2937;
     margin: 0;
     font-size: 16px;
     font-weight: 600;
+    letter-spacing: -0.025em;
   }
 `;
 
 export const CardContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   
   p {
     margin: 0;
-    color: #4a5568;
+    color: #6b7280;
     font-size: 14px;
     
     strong {
-      color: #2d3748;
+      color: #374151;
+      font-weight: 600;
     }
   }
 `;
 
 export const CardActions = styled.div`
   display: flex;
-  gap: 8px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
 `;

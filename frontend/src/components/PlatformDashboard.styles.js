@@ -23,159 +23,185 @@ const slideIn = keyframes`
 export const DashboardWrapper = styled.div`
   display: flex;
   min-height: 100vh;
-  background: #f7fafc;
+  background: #f8fafc;
 `;
 
 export const Sidebar = styled.aside`
   width: 280px;
-  background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   color: white;
   padding: 0;
-  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
   animation: ${slideIn} 0.5s ease-out;
   
   @media (max-width: 768px) {
     width: 100%;
     position: fixed;
-    top: 0;
+    top: 72px;
     left: 0;
     z-index: 100;
-    height: 100vh;
+    height: calc(100vh - 72px);
   }
 `;
 
 export const SidebarTitle = styled.h2`
-  padding: 30px 24px 20px;
+  padding: 32px 24px 24px;
   margin: 0;
   font-size: 20px;
   font-weight: 700;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
+  letter-spacing: -0.025em;
 `;
 
 export const SidebarMenu = styled.ul`
   list-style: none;
-  padding: 20px 0;
+  padding: 24px 0;
   margin: 0;
 `;
 
 export const SidebarMenuItem = styled.li`
   padding: 16px 24px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   border-left: 4px solid transparent;
   font-weight: 500;
+  font-size: 15px;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-left-color: #667eea;
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: #3b82f6;
+    transform: translateX(2px);
   }
   
   &.active {
-    background: rgba(102, 126, 234, 0.2);
-    border-left-color: #667eea;
-    color: #90cdf4;
+    background: rgba(59, 130, 246, 0.15);
+    border-left-color: #3b82f6;
+    color: #93c5fd;
+    font-weight: 600;
   }
 `;
 
 export const MainContent = styled.main`
   flex: 1;
-  padding: 30px;
+  padding: 32px;
   animation: ${fadeIn} 0.6s ease-out;
   
   @media (max-width: 768px) {
-    padding: 20px 15px;
+    padding: 24px 20px;
   }
 `;
 
 export const SearchInput = styled.input`
   width: 100%;
   max-width: 400px;
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 16px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  margin-bottom: 24px;
+  transition: all 0.2s ease;
   background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
   }
   
   &::placeholder {
-    color: #a0aec0;
+    color: #9ca3af;
   }
 `;
 
 export const OrgTable = styled.table`
   width: 100%;
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-collapse: collapse;
+  border: 1px solid #f1f5f9;
   
   th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
-    padding: 16px;
+    padding: 20px 24px;
     text-align: left;
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border: none;
   }
   
   td {
-    padding: 16px;
-    border-bottom: 1px solid #e2e8f0;
-    color: #4a5568;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+    font-size: 15px;
     
     &:last-child {
       display: flex;
       gap: 8px;
+      align-items: center;
     }
   }
   
-  tr:hover {
-    background: #f7fafc;
+  tr {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #f8fafc;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    &:last-child td {
+      border-bottom: none;
+    }
   }
   
   button {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border: none;
-    border-radius: 6px;
+    border-radius: 50px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     
     &:first-child {
-      background: #48bb78;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: white;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
       
       &:hover {
-        background: #38a169;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
         transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
       }
     }
     
     &:last-child {
-      background: #e53e3e;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       color: white;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
       
       &:hover {
-        background: #c53030;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
         transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
       }
     }
     
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
   }
 `;
@@ -186,19 +212,20 @@ export const LoadingOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9999;
   animation: ${fadeIn} 0.3s ease-out;
 `;
 
 export const Spinner = styled.div`
   width: 50px;
   height: 50px;
-  border: 4px solid #e2e8f0;
-  border-top: 4px solid #667eea;
+  border: 4px solid #f1f5f9;
+  border-top: 4px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -214,34 +241,39 @@ export const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   animation: ${fadeIn} 0.3s ease-out;
+  padding: 20px;
 `;
 
 export const Modal = styled.div`
   background: white;
-  border-radius: 12px;
-  padding: 30px;
+  border-radius: 20px;
+  padding: 32px;
   max-width: 500px;
-  width: 90%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   animation: ${fadeIn} 0.4s ease-out;
+  border: 1px solid #e5e7eb;
   
   h3 {
-    color: #2d3748;
-    margin: 0 0 16px 0;
+    color: #1f2937;
+    margin: 0 0 20px 0;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
   
   p {
-    color: #4a5568;
-    margin: 0 0 20px 0;
-    line-height: 1.5;
+    color: #6b7280;
+    margin: 0 0 24px 0;
+    line-height: 1.6;
+    font-size: 15px;
   }
 `;
 
@@ -249,62 +281,68 @@ export const ModalActions = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  margin-top: 24px;
 `;
 
 export const CloseButton = styled.button`
-  background: #e2e8f0;
-  color: #4a5568;
+  background: #f3f4f6;
+  color: #374151;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 14px;
   
   &:hover {
-    background: #cbd5e0;
+    background: #e5e7eb;
     transform: translateY(-1px);
   }
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 `;
 
 export const CancelButton = styled.button`
-  background: #e2e8f0;
-  color: #4a5568;
+  background: #f3f4f6;
+  color: #374151;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 14px;
   
   &:hover {
-    background: #cbd5e0;
+    background: #e5e7eb;
     transform: translateY(-1px);
   }
 `;
 
 export const DeleteConfirmButton = styled.button`
-  background: #e53e3e;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
   
   &:hover {
-    background: #c53030;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
   }
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
   }
 `;
