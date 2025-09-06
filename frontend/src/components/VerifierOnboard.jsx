@@ -2,15 +2,50 @@ import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../utils/api";
 import {
   VerifierContainer,
+  FormHeader,
+  FormTitle,
+  FormSubtitle,
   VerifierForm,
+  FormSection,
   FormGroup,
   Label,
   Input,
+  InputWrapper,
+  InputIcon,
   Select,
+  StudentSection,
+  StudentHeader,
+  StudentTitle,
+  StudentSubtitle,
+  SearchWrapper,
+  SearchIcon,
+  StudentList,
+  StudentItem,
+  StudentCheckbox,
+  StudentInfo,
+  StudentName,
+  StudentRegister,
+  StudentEmpty,
+  SelectedStudents,
+  SelectedCount,
+  SelectedList,
+  SelectedStudent,
+  RemoveStudent,
   SubmitButton,
-  Loader,
+  FormActions,
+  LoadingOverlay,
+  Spinner,
+  LoadingText,
+  ModalOverlay,
   Modal,
+  ModalHeader,
+  ModalTitle,
   ModalContent,
+  ModalActions,
+  CloseButton,
+  SuccessIcon,
+  ErrorIcon,
+  ModalIcon
 } from "./VerifierOnboard.styles";
 
 function VerifierOnboard() {
@@ -94,110 +129,177 @@ function VerifierOnboard() {
 
   return (
     <VerifierContainer>
-      <h4>Invite Verifier</h4>
+      <FormHeader>
+        <FormTitle>Invite Verifier</FormTitle>
+        <FormSubtitle>Send verification access to external verifiers</FormSubtitle>
+      </FormHeader>
+
       <VerifierForm onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Company Name</Label>
-          <Input
-            type="text"
-            name="companyName"
-            value={formData.companyName}
-            onChange={handleChange}
-            placeholder="Enter company name"
-            required
-          />
-        </FormGroup>
+        <FormSection>
+          <FormGroup>
+            <Label>Company Name</Label>
+            <InputWrapper>
+              <InputIcon>🏢</InputIcon>
+              <Input
+                type="text"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+                placeholder="Enter company name"
+                required
+              />
+            </InputWrapper>
+          </FormGroup>
 
-        <FormGroup>
-          <Label>Verifier Email</Label>
-          <Input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter verifier email"
-            required
-          />
-        </FormGroup>
+          <FormGroup>
+            <Label>Verifier Email</Label>
+            <InputWrapper>
+              <InputIcon>📧</InputIcon>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter verifier email"
+                required
+              />
+            </InputWrapper>
+          </FormGroup>
 
-        <FormGroup>
-          <Label>Expiry (hours)</Label>
-          <Select
-            name="expiryHours"
-            value={formData.expiryHours}
-            onChange={handleChange}
-          >
-            <option value={12}>12 Hours</option>
-            <option value={24}>24 Hours</option>
-            <option value={48}>48 Hours</option>
-            <option value={72}>3 Days</option>
-          </Select>
-        </FormGroup>
+          <FormGroup>
+            <Label>Access Duration</Label>
+            <InputWrapper>
+              <InputIcon>⏰</InputIcon>
+              <Select
+                name="expiryHours"
+                value={formData.expiryHours}
+                onChange={handleChange}
+              >
+                <option value={12}>12 Hours</option>
+                <option value={24}>24 Hours</option>
+                <option value={48}>48 Hours</option>
+                <option value={72}>3 Days</option>
+              </Select>
+            </InputWrapper>
+          </FormGroup>
 
-        <FormGroup>
-          <Label>Search Students by Register No</Label>
-          <Input
-            type="text"
-            placeholder="Search register no..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
-          />
-        </FormGroup>
+          <StudentSection>
+            <StudentHeader>
+              <StudentTitle>Select Students ({formData.students.length} selected)</StudentTitle>
+              <StudentSubtitle>Choose which students the verifier can access</StudentSubtitle>
+            </StudentHeader>
 
-        <FormGroup>
-          <Label>Select Students</Label>
-          <div style={{ maxHeight: "200px", overflowY: "auto", padding: "10px" }}>
-            {searchQuery.length === 0 ? (
-              <p style={{ color: "#999" }}>Start typing to search for students</p>
-            ) : filteredUsers.length > 0 ? (
-              filteredUsers.map((u) => (
-                <label
-                  key={u._id}
-                  style={{
-                    display: "block",
-                    padding: "5px 0",
-                    cursor: "pointer",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.students.includes(u._id)}
-                    onChange={() => handleStudentSelect(u._id)}
-                    style={{ marginRight: "10px" }}
-                  />
-                  {u.userDetail.registerNo}{" "}
-                  {u.userDetail.name && `- ${u.userDetail.name}`}
-                </label>
-              ))
-            ) : (
-              <p style={{ color: "#999" }}>No matching users found</p>
+            <FormGroup>
+              <Label>Search Students</Label>
+              <SearchWrapper>
+                <SearchIcon>🔍</SearchIcon>
+                <Input
+                  type="text"
+                  placeholder="Search by register number..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </SearchWrapper>
+            </FormGroup>
+
+            {searchQuery.length > 0 && (
+              <StudentList>
+                {filteredUsers.length > 0 ? (
+                  filteredUsers.map((u) => (
+                    <StudentItem key={u._id}>
+                      <StudentCheckbox
+                        type="checkbox"
+                        checked={formData.students.includes(u._id)}
+                        onChange={() => handleStudentSelect(u._id)}
+                      />
+                      <StudentInfo>
+                        <StudentName>{u.userDetail?.name || 'Unknown Student'}</StudentName>
+                        <StudentRegister>Reg: {u.userDetail?.registerNo || 'N/A'}</StudentRegister>
+                      </StudentInfo>
+                    </StudentItem>
+                  ))
+                ) : (
+                  <StudentEmpty>
+                    <p>No matching students found</p>
+                  </StudentEmpty>
+                )}
+              </StudentList>
             )}
-          </div>
-        </FormGroup>
 
-        <SubmitButton type="submit" disabled={loading}>
-          {loading ? "Inviting..." : "Send Invite"}
-        </SubmitButton>
+            {formData.students.length > 0 && (
+              <SelectedStudents>
+                <SelectedCount>Selected Students ({formData.students.length})</SelectedCount>
+                <SelectedList>
+                  {formData.students.map((studentId) => {
+                    const student = users.find(u => u._id === studentId);
+                    return (
+                      <SelectedStudent key={studentId}>
+                        <StudentInfo>
+                          <StudentName>{student?.userDetail?.name || 'Unknown Student'}</StudentName>
+                          <StudentRegister>Reg: {student?.userDetail?.registerNo || 'N/A'}</StudentRegister>
+                        </StudentInfo>
+                        <RemoveStudent onClick={() => handleStudentSelect(studentId)}>
+                          ✕
+                        </RemoveStudent>
+                      </SelectedStudent>
+                    );
+                  })}
+                </SelectedList>
+              </SelectedStudents>
+            )}
+          </StudentSection>
+
+          <FormActions>
+            <SubmitButton type="submit" disabled={loading}>
+              {loading ? "Sending Invite..." : "Send Invite"}
+            </SubmitButton>
+          </FormActions>
+        </FormSection>
       </VerifierForm>
 
-      {loading && <Loader />}
+      {loading && (
+        <LoadingOverlay>
+          <Spinner />
+          <LoadingText>Sending invitation...</LoadingText>
+        </LoadingOverlay>
+      )}
 
       {error && (
-        <Modal>
-          <ModalContent className="error">
-            <p>{error}</p>
-            <button onClick={() => setError("")}>Close</button>
-          </ModalContent>
-        </Modal>
+        <ModalOverlay>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                <ErrorIcon>⚠️</ErrorIcon>
+              </ModalIcon>
+              <ModalTitle>Error</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{error}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {success && (
-        <Modal>
-          <ModalContent className="success">
-            <p>{success}</p>
-            <button onClick={() => setSuccess("")}>Close</button>
-          </ModalContent>
-        </Modal>
+        <ModalOverlay>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                <SuccessIcon>✅</SuccessIcon>
+              </ModalIcon>
+              <ModalTitle>Success</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{success}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
       )}
     </VerifierContainer>
   );

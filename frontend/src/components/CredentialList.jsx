@@ -2,12 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import {
   CredentialListContainer,
-  CredentialTable,
+  Header,
+  HeaderTitle,
+  HeaderSubtitle,
+  ContentSection,
+  SectionTitle,
+  CredentialGrid,
+  CredentialCard,
+  CredentialHeader,
+  CredentialUser,
+  UserAvatar,
+  UserInfo,
+  UserName,
+  UserEmail,
+  CredentialDetails,
+  DetailItem,
+  DetailLabel,
+  DetailValue,
+  CredentialActions,
   VerifyButton,
   StatusBadge,
   PDFLink,
   EmptyState,
-  LoadingRow,
+  EmptyIcon,
+  EmptyTitle,
+  EmptySubtitle,
+  LoadingOverlay,
+  Spinner,
+  LoadingText
 } from './CredentialList.styles';
 
 function CredentialList({ setSuccess, setError }) {
@@ -48,75 +70,94 @@ function CredentialList({ setSuccess, setError }) {
 
   return (
     <CredentialListContainer>
-      <h3>Credentials</h3>
+      <Header>
+        <HeaderTitle>Credentials</HeaderTitle>
+        <HeaderSubtitle>Manage and verify academic credentials</HeaderSubtitle>
+      </Header>
 
-      <CredentialTable>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Semester</th>
-            <th>Template</th>
-            <th>PDF</th>
-            <th>Verify</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <LoadingRow>
-              <td colSpan="5">Loading credentials...</td>
-            </LoadingRow>
-          ) : credentials.length > 0 ? (
-            credentials.map((cred) => {
+      <ContentSection>
+        <SectionTitle>All Credentials ({credentials.length})</SectionTitle>
+
+        {loading ? (
+          <LoadingOverlay>
+            <Spinner />
+            <LoadingText>Loading credentials...</LoadingText>
+          </LoadingOverlay>
+        ) : credentials.length > 0 ? (
+          <CredentialGrid>
+            {credentials.map((cred) => {
               const v = verifications[cred._id] || {};
               return (
-                <tr key={cred._id}>
-                  <td>{cred.user?.userDetail?.name || 'N/A'}</td>
-                  <td>{cred.semester?.semesterNumber || 'N/A'}</td>
-                  <td>{cred.template?.name || 'N/A'}</td>
-                  <td>
-                    {cred.cid ? (
+                <CredentialCard key={cred._id}>
+                  <CredentialHeader>
+                    <CredentialUser>
+                      <UserAvatar>
+                        {(cred.user?.userDetail?.name || cred.user?.email || 'U').charAt(0).toUpperCase()}
+                      </UserAvatar>
+                      <UserInfo>
+                        <UserName>{cred.user?.userDetail?.name || 'Unknown User'}</UserName>
+                        <UserEmail>{cred.user?.email || 'N/A'}</UserEmail>
+                      </UserInfo>
+                    </CredentialUser>
+                  </CredentialHeader>
+
+                  <CredentialDetails>
+                    <DetailItem>
+                      <DetailLabel>Semester</DetailLabel>
+                      <DetailValue>{cred.semester?.semesterNumber || 'N/A'}</DetailValue>
+                    </DetailItem>
+                    <DetailItem>
+                      <DetailLabel>Template</DetailLabel>
+                      <DetailValue>{cred.template?.name || 'N/A'}</DetailValue>
+                    </DetailItem>
+                    <DetailItem>
+                      <DetailLabel>Status</DetailLabel>
+                      <DetailValue>
+                        {v.verified === true && (
+                          <StatusBadge className="valid">✅ Valid</StatusBadge>
+                        )}
+                        {v.verified === false && (
+                          <StatusBadge className="invalid">❌ Invalid</StatusBadge>
+                        )}
+                        {v.error && (
+                          <StatusBadge className="warning">⚠️ Error</StatusBadge>
+                        )}
+                        {!v.verified && !v.error && !v.loading && (
+                          <StatusBadge className="pending">⏳ Pending</StatusBadge>
+                        )}
+                      </DetailValue>
+                    </DetailItem>
+                  </CredentialDetails>
+
+                  <CredentialActions>
+                    {cred.cid && (
                       <PDFLink
                         href={cred.cid}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        View PDF
+                        📄 View PDF
                       </PDFLink>
-                    ) : (
-                      'N/A'
                     )}
-                  </td>
-                  <td>
                     <VerifyButton
                       onClick={() => handleVerify(cred._id)}
                       disabled={v.loading}
                     >
                       {v.loading ? 'Verifying...' : 'Verify'}
                     </VerifyButton>
-                    {v.verified === true && (
-                      <StatusBadge className="valid">✅ Valid</StatusBadge>
-                    )}
-                    {v.verified === false && (
-                      <StatusBadge className="invalid">❌ Invalid</StatusBadge>
-                    )}
-                    {v.error && (
-                      <StatusBadge className="warning">⚠️ {v.error}</StatusBadge>
-                    )}
-                  </td>
-                </tr>
+                  </CredentialActions>
+                </CredentialCard>
               );
-            })
-          ) : (
-            <tr>
-              <td colSpan="5">
-                <EmptyState>
-                  <p>No credentials found</p>
-                </EmptyState>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </CredentialTable>
+            })}
+          </CredentialGrid>
+        ) : (
+          <EmptyState>
+            <EmptyIcon>📜</EmptyIcon>
+            <EmptyTitle>No Credentials Found</EmptyTitle>
+            <EmptySubtitle>No credentials have been issued yet.</EmptySubtitle>
+          </EmptyState>
+        )}
+      </ContentSection>
     </CredentialListContainer>
   );
 }

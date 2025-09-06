@@ -2,21 +2,43 @@ import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
 import {
   SemesterContainer,
+  FormHeader,
+  FormTitle,
+  FormSubtitle,
   SemesterForm as StyledForm,
+  FormSection,
   FormRow,
   FormGroup,
   Label,
   Input,
+  InputWrapper,
+  InputIcon,
   Select,
   SubjectSection,
+  SubjectHeader,
+  SubjectTitle,
+  SubjectSubtitle,
   SubjectRow,
   SubjectInput,
+  SubjectInputWrapper,
+  SubjectInputIcon,
   RemoveButton,
   AddSubjectButton,
   SubmitButton,
-  Loader,
+  FormActions,
+  LoadingOverlay,
+  Spinner,
+  LoadingText,
+  ModalOverlay,
   Modal,
+  ModalHeader,
+  ModalIcon,
+  ModalTitle,
   ModalContent,
+  ModalActions,
+  CloseButton,
+  SuccessIcon,
+  ErrorIcon
 } from "./SemesterForm.styles";
 
 function SemesterForm() {
@@ -102,153 +124,236 @@ function SemesterForm() {
 
   return (
     <SemesterContainer>
-      <h4>Add/Update Semester</h4>
+      <FormHeader>
+        <FormTitle>Add/Update Semester</FormTitle>
+        <FormSubtitle>Create or update academic semester records for students</FormSubtitle>
+      </FormHeader>
+
       <StyledForm onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>User</Label>
-          <Select name="userId" value={form.userId} onChange={handleChange} required>
-            <option value="">Select User</option>
-            {users.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.email}
-              </option>
+        <FormSection>
+          <FormGroup>
+            <Label>Select User</Label>
+            <InputWrapper>
+              <InputIcon>👤</InputIcon>
+              <Select name="userId" value={form.userId} onChange={handleChange} required>
+                <option value="">Select User</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.email}
+                  </option>
+                ))}
+              </Select>
+            </InputWrapper>
+          </FormGroup>
+
+          <FormRow>
+            <FormGroup>
+              <Label>Semester Number</Label>
+              <InputWrapper>
+                <InputIcon>🔢</InputIcon>
+                <Input
+                  type="number"
+                  name="semesterNumber"
+                  placeholder="Enter semester number"
+                  value={form.semesterNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </InputWrapper>
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Month & Year of Exam</Label>
+              <InputWrapper>
+                <InputIcon>📅</InputIcon>
+                <Input
+                  type="text"
+                  name="monthYearOfExam"
+                  placeholder="NOV. 2024"
+                  value={form.monthYearOfExam}
+                  onChange={handleChange}
+                />
+              </InputWrapper>
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Date of Publication</Label>
+              <InputWrapper>
+                <InputIcon>📆</InputIcon>
+                <Input
+                  type="date"
+                  name="dateOfPublication"
+                  value={form.dateOfPublication}
+                  onChange={handleChange}
+                  required
+                />
+              </InputWrapper>
+            </FormGroup>
+          </FormRow>
+
+          <SubjectSection>
+            <SubjectHeader>
+              <SubjectTitle>Subjects ({form.subjects.length})</SubjectTitle>
+              <SubjectSubtitle>Add subjects and their details for this semester</SubjectSubtitle>
+            </SubjectHeader>
+
+            {form.subjects.map((subject, index) => (
+              <SubjectRow key={index}>
+                <SubjectInputWrapper>
+                  <SubjectInputIcon>📚</SubjectInputIcon>
+                  <SubjectInput
+                    type="text"
+                    name="subjectCode"
+                    placeholder="Subject Code"
+                    value={subject.subjectCode}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </SubjectInputWrapper>
+
+                <SubjectInputWrapper>
+                  <SubjectInputIcon>📖</SubjectInputIcon>
+                  <SubjectInput
+                    type="text"
+                    name="subjectTitle"
+                    placeholder="Subject Title"
+                    value={subject.subjectTitle}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </SubjectInputWrapper>
+
+                <SubjectInputWrapper>
+                  <SubjectInputIcon>⚖️</SubjectInputIcon>
+                  <SubjectInput
+                    type="number"
+                    name="credits"
+                    placeholder="Credits"
+                    value={subject.credits}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </SubjectInputWrapper>
+
+                <SubjectInputWrapper>
+                  <SubjectInputIcon>⭐</SubjectInputIcon>
+                  <SubjectInput
+                    type="text"
+                    name="grade"
+                    placeholder="Grade (A, B, C, D, F)"
+                    value={subject.grade}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </SubjectInputWrapper>
+
+                <SubjectInputWrapper>
+                  <SubjectInputIcon>✅</SubjectInputIcon>
+                  <SubjectInput
+                    type="text"
+                    name="result"
+                    placeholder="Result (PASS/FAIL)"
+                    value={subject.result}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </SubjectInputWrapper>
+
+                {form.subjects.length > 1 && (
+                  <RemoveButton type="button" onClick={() => removeSubject(index)}>
+                    🗑️
+                  </RemoveButton>
+                )}
+              </SubjectRow>
             ))}
-          </Select>
-        </FormGroup>
 
-        <FormRow>
-          <FormGroup>
-            <Label>Semester Number</Label>
-            <Input
-              type="number"
-              name="semesterNumber"
-              placeholder="Semester Number"
-              value={form.semesterNumber}
-              onChange={handleChange}
-              required
-            />
-          </FormGroup>
+            <AddSubjectButton type="button" onClick={addSubject}>
+              ➕ Add Subject
+            </AddSubjectButton>
+          </SubjectSection>
 
-          <FormGroup>
-            <Label>Month & Year of Exam</Label>
-            <Input
-              type="text"
-              name="monthYearOfExam"
-              placeholder="NOV. 2024"
-              value={form.monthYearOfExam}
-              onChange={handleChange}
-            />
-          </FormGroup>
+          <FormRow>
+            <FormGroup>
+              <Label>GPA</Label>
+              <InputWrapper>
+                <InputIcon>📊</InputIcon>
+                <Input
+                  type="number"
+                  name="gpa"
+                  placeholder="Enter GPA"
+                  value={form.gpa}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  max="10"
+                />
+              </InputWrapper>
+            </FormGroup>
 
-          <FormGroup>
-            <Label>Date of Publication</Label>
-            <Input
-              type="date"
-              name="dateOfPublication"
-              value={form.dateOfPublication}
-              onChange={handleChange}
-              required
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <Label>CGPA</Label>
+              <InputWrapper>
+                <InputIcon>📈</InputIcon>
+                <Input
+                  type="number"
+                  name="cgpa"
+                  placeholder="Enter CGPA"
+                  value={form.cgpa}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  max="10"
+                />
+              </InputWrapper>
+            </FormGroup>
+          </FormRow>
 
-        <SubjectSection>
-          <h5>Subjects</h5>
-          {form.subjects.map((subject, index) => (
-            <SubjectRow key={index}>
-              <SubjectInput
-                type="text"
-                name="subjectCode"
-                placeholder="Subject Code"
-                value={subject.subjectCode}
-                onChange={(e) => handleChange(e, index)}
-              />
-              <SubjectInput
-                type="text"
-                name="subjectTitle"
-                placeholder="Subject Title"
-                value={subject.subjectTitle}
-                onChange={(e) => handleChange(e, index)}
-              />
-              <SubjectInput
-                type="number"
-                name="credits"
-                placeholder="Credits"
-                value={subject.credits}
-                onChange={(e) => handleChange(e, index)}
-              />
-              <SubjectInput
-                type="text"
-                name="grade"
-                placeholder="Grade"
-                value={subject.grade}
-                onChange={(e) => handleChange(e, index)}
-              />
-              <SubjectInput
-                type="text"
-                name="result"
-                placeholder="Result"
-                value={subject.result}
-                onChange={(e) => handleChange(e, index)}
-              />
-              {form.subjects.length > 1 && (
-                <RemoveButton type="button" onClick={() => removeSubject(index)}>
-                  ×
-                </RemoveButton>
-              )}
-            </SubjectRow>
-          ))}
-          <AddSubjectButton type="button" onClick={addSubject}>
-            Add Subject
-          </AddSubjectButton>
-        </SubjectSection>
-
-        <FormRow>
-          <FormGroup>
-            <Label>GPA</Label>
-            <Input
-              type="number"
-              name="gpa"
-              placeholder="GPA"
-              value={form.gpa}
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label>CGPA</Label>
-            <Input
-              type="number"
-              name="cgpa"
-              placeholder="CGPA"
-              value={form.cgpa}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </FormRow>
-
-        <SubmitButton type="submit" disabled={loading}>
-          Submit Semester
-        </SubmitButton>
+          <FormActions>
+            <SubmitButton type="submit" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Semester"}
+            </SubmitButton>
+          </FormActions>
+        </FormSection>
       </StyledForm>
 
-      {loading && <Loader />}
+      {loading && (
+        <LoadingOverlay>
+          <Spinner />
+          <LoadingText>Processing semester data...</LoadingText>
+        </LoadingOverlay>
+      )}
 
       {error && (
-        <Modal>
-          <ModalContent className="error">
-            <p>{error}</p>
-            <button onClick={() => setError("")}>Close</button>
-          </ModalContent>
-        </Modal>
+        <ModalOverlay>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                <ErrorIcon>⚠️</ErrorIcon>
+              </ModalIcon>
+              <ModalTitle>Error</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{error}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
       )}
 
       {success && (
-        <Modal>
-          <ModalContent className="success">
-            <p>{success}</p>
-            <button onClick={() => setSuccess("")}>Close</button>
-          </ModalContent>
-        </Modal>
+        <ModalOverlay>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                <SuccessIcon>✅</SuccessIcon>
+              </ModalIcon>
+              <ModalTitle>Success</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{success}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
       )}
     </SemesterContainer>
   );

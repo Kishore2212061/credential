@@ -4,6 +4,7 @@ import { api, setAuth } from "../utils/api";
 // styled components
 import {
   LoginContainer,
+  BackgroundPattern,
   LoginCard,
   LoginHeader,
   FormIcon,
@@ -16,6 +17,10 @@ import {
   LoginInput,
   LoginSelect,
   LoginButton,
+  RoleSelector,
+  RoleOption,
+  RoleIcon,
+  RoleLabel,
   LoadingOverlay,
   LoadingContainer,
   Spinner,
@@ -28,7 +33,12 @@ import {
   ModalTitle,
   ModalText,
   ModalActions,
-  CloseButton
+  CloseButton,
+  WalletInfo,
+  WalletAddress,
+  WalletKey,
+  CopyButton,
+  SecurityWarning
 } from "./Login.styles";
 
 function Login({ onLogin }) {
@@ -68,6 +78,7 @@ function Login({ onLogin }) {
 
   return (
     <LoginContainer>
+      <BackgroundPattern />
       <LoginCard>
         <LoginHeader>
           <FormIcon>🔐</FormIcon>
@@ -78,11 +89,29 @@ function Login({ onLogin }) {
         <LoginForm onSubmit={handleSubmit}>
           <FormGroup>
             <Label>Select Role</Label>
-            <LoginSelect value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="platform">Platform Admin</option>
-              <option value="organization">Organization</option>
-              <option value="user">User</option>
-            </LoginSelect>
+            <RoleSelector>
+              <RoleOption
+                selected={role === "platform"}
+                onClick={() => setRole("platform")}
+              >
+                <RoleIcon>🏢</RoleIcon>
+                <RoleLabel>Platform Admin</RoleLabel>
+              </RoleOption>
+              <RoleOption
+                selected={role === "organization"}
+                onClick={() => setRole("organization")}
+              >
+                <RoleIcon>🏛️</RoleIcon>
+                <RoleLabel>Organization</RoleLabel>
+              </RoleOption>
+              <RoleOption
+                selected={role === "user"}
+                onClick={() => setRole("user")}
+              >
+                <RoleIcon>👤</RoleIcon>
+                <RoleLabel>User</RoleLabel>
+              </RoleOption>
+            </RoleSelector>
           </FormGroup>
 
           <FormGroup>
@@ -150,13 +179,36 @@ function Login({ onLogin }) {
               <ModalIcon>🔑</ModalIcon>
               <ModalTitle>Your Wallet Has Been Created</ModalTitle>
             </ModalHeader>
-           <ModalContent as="div">
-              <p><strong>Address:</strong> {walletInfo.address}</p>
-              <p><strong>Private Key:</strong> {walletInfo.privateKey}</p>
-              <br />
-              ⚠️ Please save this private key securely. 
-              You will need it to import your wallet into MetaMask. 
-              It will not be shown again.
+            <ModalContent>
+              <WalletInfo>
+                <div>
+                  <Label>Wallet Address</Label>
+                  <WalletAddress>
+                    {walletInfo.address}
+                    <CopyButton
+                      onClick={() => navigator.clipboard.writeText(walletInfo.address)}
+                    >
+                      📋
+                    </CopyButton>
+                  </WalletAddress>
+                </div>
+                <div>
+                  <Label>Private Key</Label>
+                  <WalletKey>
+                    {walletInfo.privateKey}
+                    <CopyButton
+                      onClick={() => navigator.clipboard.writeText(walletInfo.privateKey)}
+                    >
+                      📋
+                    </CopyButton>
+                  </WalletKey>
+                </div>
+                <SecurityWarning>
+                  ⚠️ <strong>Important:</strong> Please save this private key securely.
+                  You will need it to import your wallet into MetaMask.
+                  It will not be shown again.
+                </SecurityWarning>
+              </WalletInfo>
             </ModalContent>
             <ModalActions>
               <CloseButton

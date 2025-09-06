@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes } from 'styled-components';
 
 const fadeIn = keyframes`
   from {
@@ -11,14 +11,23 @@ const fadeIn = keyframes`
   }
 `;
 
-const slideUp = keyframes`
+const slideIn = keyframes`
   from {
-    transform: translateY(30px);
     opacity: 0;
+    transform: translateX(-30px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const float = keyframes`
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
   }
 `;
 
@@ -27,14 +36,14 @@ const pulse = keyframes`
     transform: scale(1);
   }
   50% {
-    transform: scale(1.02);
+    transform: scale(1.05);
   }
 `;
 
 export const DashboardContainer = styled.div`
-  padding: 32px;
-  background: #f8fafc;
   min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 40px;
   animation: ${fadeIn} 0.6s ease-out;
   
   @media (max-width: 768px) {
@@ -42,150 +51,334 @@ export const DashboardContainer = styled.div`
   }
 `;
 
-export const CompanyCard = styled.div`
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
-  padding: 32px;
-  border-radius: 20px;
-  margin-bottom: 32px;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
-  animation: ${slideUp} 0.5s ease-out;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-
-  h2 {
-    margin: 0 0 12px;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-  }
-
-  p {
-    margin: 8px 0;
-    font-size: 16px;
-    opacity: 0.9;
-  }
+export const Header = styled.div`
+  margin-bottom: 40px;
 `;
 
-export const Timer = styled.div`
-  margin-top: 20px;
-  font-weight: 600;
-
-  span {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 8px 16px;
-    border-radius: 50px;
-    font-size: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .expired {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: #fff;
-    animation: ${pulse} 2s infinite;
-  }
+export const HeaderTitle = styled.h1`
+  color: #1e293b;
+  margin: 0 0 12px 0;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
-export const StudentGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
-`;
-
-export const StudentCard = styled.div`
-  background: #fff;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid #f1f5f9;
-  animation: ${slideUp} 0.4s ease-out;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    border-color: #e5e7eb;
-  }
-
-  h4 {
-    margin: 0 0 12px;
-    font-size: 18px;
-    color: #1f2937;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-  }
-
-  p {
-    margin: 8px 0;
-    font-size: 14px;
-    color: #6b7280;
-    
-    &:first-of-type {
-      color: #374151;
-      font-weight: 500;
-    }
-  }
+export const HeaderSubtitle = styled.p`
+  color: #64748b;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
 `;
 
 export const BackButton = styled.button`
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: #fff;
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 50px;
-  margin-bottom: 24px;
-  cursor: pointer;
-  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 12px;
   font-weight: 600;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+  
   &:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
   }
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 4px rgba(107, 114, 128, 0.3);
   }
 `;
 
-export const DetailCard = styled.div`
-  background: #fff;
+export const CompanyCard = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
   padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(147, 51, 234, 0.02) 100%);
+    pointer-events: none;
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+`;
+
+export const CompanyInfo = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+export const CompanyName = styled.h2`
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
+
+export const CompanyEmail = styled.p`
+  color: #64748b;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+export const Timer = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+export const TimerText = styled.span`
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  animation: ${pulse} 2s infinite;
+`;
+
+export const TimerExpired = styled.span`
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+`;
+
+export const StudentSection = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
+
+export const SectionTitle = styled.h3`
+  color: #1e293b;
+  margin: 0 0 32px 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
+
+export const StudentGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+`;
+
+export const StudentCard = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(147, 51, 234, 0.02) 100%);
+    pointer-events: none;
+  }
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+      0 16px 48px rgba(0, 0, 0, 0.12),
+      0 0 0 1px rgba(255, 255, 255, 0.3);
+  }
+`;
+
+export const StudentAvatar = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  position: relative;
+  z-index: 1;
+`;
+
+export const StudentInfo = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+export const StudentName = styled.h4`
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
+
+export const StudentEmail = styled.p`
+  color: #64748b;
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+export const StudentDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const DetailItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const DetailLabel = styled.span`
+  color: #64748b;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+export const DetailValue = styled.span`
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 14px;
+`;
+
+export const DetailCard = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(147, 51, 234, 0.02) 100%);
+    pointer-events: none;
+  }
+`;
+
+export const DetailHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
   margin-bottom: 32px;
-  border: 1px solid #f1f5f9;
-  animation: ${slideUp} 0.4s ease-out;
+  position: relative;
+  z-index: 1;
+`;
 
-  h2 {
-    margin-bottom: 20px;
-    color: #1f2937;
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-  }
+export const DetailTitle = styled.h2`
+  color: #1e293b;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
 
-  p {
-    margin: 12px 0;
-    font-size: 15px;
-    color: #6b7280;
-    line-height: 1.5;
-  }
+export const EmptyState = styled.div`
+  text-align: center;
+  padding: 80px 40px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  grid-column: 1 / -1;
+`;
 
-  strong {
-    color: #374151;
-    font-weight: 600;
-  }
+export const EmptyIcon = styled.div`
+  font-size: 64px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+  animation: ${float} 3s ease-in-out infinite;
+`;
+
+export const EmptyTitle = styled.h3`
+  color: #1e293b;
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
+
+export const EmptySubtitle = styled.p`
+  color: #64748b;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
 `;

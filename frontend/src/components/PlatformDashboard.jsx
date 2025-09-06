@@ -9,12 +9,39 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   MainContent,
+  Header,
+  HeaderTitle,
+  HeaderSubtitle,
+  SearchContainer,
   SearchInput,
-  OrgTable,
+  SearchIcon,
+  StatsGrid,
+  StatCard,
+  StatIcon,
+  StatValue,
+  StatLabel,
+  ContentSection,
+  SectionTitle,
+  SectionSubtitle,
+  OrgGrid,
+  OrgCard,
+  OrgAvatar,
+  OrgInfo,
+  OrgName,
+  OrgEmail,
+  OrgActions,
+  ActionButton,
+  EmptyState,
+  EmptyIcon,
+  EmptyTitle,
+  EmptySubtitle,
   LoadingOverlay,
   Spinner,
   ModalOverlay,
   Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalContent,
   ModalActions,
   CloseButton,
   CancelButton,
@@ -124,45 +151,83 @@ function PlatformDashboard() {
             clearEdit={() => setEditOrg(null)}
           />
         ) : (
-          <div>
-            <h3>Organizations</h3>
-            <SearchInput
-              type="text"
-              placeholder="Search by name or email..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          <>
+            <Header>
+              <HeaderTitle>Organizations</HeaderTitle>
+              <HeaderSubtitle>Manage and monitor your organization network</HeaderSubtitle>
+            </Header>
 
-            <OrgTable>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrgs.length > 0 ? (
-                  filteredOrgs.map((org) => (
-                    <tr key={org._id}>
-                      <td>{org.name}</td>
-                      <td>{org.email}</td>
-                      <td>
-                        <button onClick={() => handleEdit(org)}>Edit</button>
-                        <button onClick={() => confirmDelete(org)}>Delete</button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3" style={{ textAlign: "center" }}>
-                      No organizations found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </OrgTable>
-          </div>
+            <StatsGrid>
+              <StatCard>
+                <StatIcon>🏢</StatIcon>
+                <StatValue>{organizations.length}</StatValue>
+                <StatLabel>Total Organizations</StatLabel>
+              </StatCard>
+              <StatCard>
+                <StatIcon>✅</StatIcon>
+                <StatValue>{organizations.filter(org => org.status !== 'inactive').length}</StatValue>
+                <StatLabel>Active Organizations</StatLabel>
+              </StatCard>
+              <StatCard>
+                <StatIcon>📊</StatIcon>
+                <StatValue>{filteredOrgs.length}</StatValue>
+                <StatLabel>Filtered Results</StatLabel>
+              </StatCard>
+            </StatsGrid>
+
+            <ContentSection>
+              <SectionTitle>Organization Directory</SectionTitle>
+              <SectionSubtitle>Search and manage your organizations</SectionSubtitle>
+
+              <SearchContainer>
+                <SearchIcon>🔍</SearchIcon>
+                <SearchInput
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </SearchContainer>
+
+              {filteredOrgs.length > 0 ? (
+                <OrgGrid>
+                  {filteredOrgs.map((org) => (
+                    <OrgCard key={org._id}>
+                      <OrgAvatar>
+                        {org.name.charAt(0).toUpperCase()}
+                      </OrgAvatar>
+                      <OrgInfo>
+                        <OrgName>{org.name}</OrgName>
+                        <OrgEmail>{org.email}</OrgEmail>
+                      </OrgInfo>
+                      <OrgActions>
+                        <ActionButton
+                          onClick={() => handleEdit(org)}
+                          variant="edit"
+                        >
+                          ✏️ Edit
+                        </ActionButton>
+                        <ActionButton
+                          onClick={() => confirmDelete(org)}
+                          variant="delete"
+                        >
+                          🗑️ Delete
+                        </ActionButton>
+                      </OrgActions>
+                    </OrgCard>
+                  ))}
+                </OrgGrid>
+              ) : (
+                <EmptyState>
+                  <EmptyIcon>📋</EmptyIcon>
+                  <EmptyTitle>No Organizations Found</EmptyTitle>
+                  <EmptySubtitle>
+                    {search ? 'Try adjusting your search terms' : 'Get started by adding your first organization'}
+                  </EmptySubtitle>
+                </EmptyState>
+              )}
+            </ContentSection>
+          </>
         )}
       </MainContent>
 
@@ -177,9 +242,15 @@ function PlatformDashboard() {
       {error && (
         <ModalOverlay>
           <Modal>
-            <h3>Error</h3>
-            <p>{error}</p>
-            <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            <ModalHeader>
+              <ModalTitle>⚠️ Error</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{error}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}
@@ -188,9 +259,15 @@ function PlatformDashboard() {
       {success && (
         <ModalOverlay>
           <Modal>
-            <h3>Success</h3>
-            <p>{success}</p>
-            <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+            <ModalHeader>
+              <ModalTitle>✅ Success</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{success}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}
@@ -199,8 +276,12 @@ function PlatformDashboard() {
       {deleteOrg && (
         <ModalOverlay>
           <Modal>
-            <h3>Confirm Delete</h3>
-            <p>Are you sure you want to delete "{deleteOrg.name}"?</p>
+            <ModalHeader>
+              <ModalTitle>🗑️ Confirm Delete</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>Are you sure you want to delete <strong>"{deleteOrg.name}"</strong>? This action cannot be undone.</p>
+            </ModalContent>
             <ModalActions>
               <CancelButton onClick={handleCancelDelete}>Cancel</CancelButton>
               <DeleteConfirmButton onClick={handleDelete}>Delete</DeleteConfirmButton>

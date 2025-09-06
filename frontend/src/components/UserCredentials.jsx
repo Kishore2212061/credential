@@ -1,31 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import {
-  CredContainer,
-  CredTable,
-  VerifyBtn,
-  Status,
+  CredentialsContainer,
+  Header,
+  HeaderTitle,
+  HeaderSubtitle,
+  ContentSection,
+  SectionTitle,
+  CredentialGrid,
+  CredentialCard,
+  CredentialHeader,
+  CredentialUser,
+  UserAvatar,
+  UserInfo,
+  UserName,
+  UserEmail,
+  CredentialDetails,
+  DetailItem,
+  DetailLabel,
+  DetailValue,
+  CredentialActions,
+  VerifyButton,
+  StatusBadge,
   PDFLink,
+  EmptyState,
+  EmptyIcon,
+  EmptyTitle,
+  EmptySubtitle,
+  LoadingOverlay,
+  Spinner,
+  LoadingText,
   ModalOverlay,
   Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalIcon,
+  ModalContent,
+  ModalActions,
+  CloseButton,
+  SuccessIcon,
+  ErrorIcon,
   ChainDetails,
-  EmptyCredentials,
-  VerificationStatus,
-} from './UserCredential.styles';
+  ChainDetailsTitle,
+  ChainDetailItem,
+  ChainDetailLabel,
+  ChainDetailValue,
+  ChainLink
+} from './UserCredentials.styles';
 
-function UserCredential({ userId, mode = "user"}) {
+function UserCredential({ userId, mode = "user" }) {
   const [credentials, setCredentials] = useState([]);
   const [verifications, setVerifications] = useState({});
   const [modal, setModal] = useState({ type: '', message: '', open: false, cred: null });
-  console.log(mode)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) return;
-            try {
+      setLoading(true);
+      try {
         let res;
         if (mode === "user") {
-         res = await api.get(`/credential/${userId}`);
+          res = await api.get(`/credential/${userId}`);
         } else {
           const token = localStorage.getItem("verifierToken");
           res = await api.get(`/verifier/students/${userId}/credentials?token=${token}`);
@@ -34,6 +70,8 @@ function UserCredential({ userId, mode = "user"}) {
       } catch (err) {
         console.error("Failed to fetch credentials:", err);
         setModal({ type: "error", message: "Failed to load credentials", open: true });
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -74,99 +112,164 @@ function UserCredential({ userId, mode = "user"}) {
   };
 
   return (
-    <CredContainer>
-      <h4>Credentials</h4>
-      <CredTable>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Semester</th>
-            <th>Template</th>
-            <th>PDF</th>
-            <th>Verify</th>
-          </tr>
-        </thead>
-        <tbody>
-          {credentials.length > 0 ? (
-            credentials.map((cred) => {
+    <CredentialsContainer>
+      <Header>
+        <HeaderTitle>Credentials</HeaderTitle>
+        <HeaderSubtitle>View and verify academic credentials</HeaderSubtitle>
+      </Header>
+
+      <ContentSection>
+        <SectionTitle>All Credentials ({credentials.length})</SectionTitle>
+
+        {loading ? (
+          <LoadingOverlay>
+            <Spinner />
+            <LoadingText>Loading credentials...</LoadingText>
+          </LoadingOverlay>
+        ) : credentials.length > 0 ? (
+          <CredentialGrid>
+            {credentials.map((cred) => {
               const v = verifications[cred._id] || {};
               return (
-                <tr key={cred._id}>
-                  <td>{cred.user?.userDetail?.name || 'N/A'}</td>
-                  <td>{cred.semester?.semesterNumber || 'N/A'}</td>
-                  <td>{cred.template?.name || 'N/A'}</td>
-                  <td>
-                    {cred.cid ? (
+                <CredentialCard key={cred._id}>
+                  <CredentialHeader>
+                    <CredentialUser>
+                      <UserAvatar>
+                        {(cred.user?.userDetail?.name || cred.user?.email || 'U').charAt(0).toUpperCase()}
+                      </UserAvatar>
+                      <UserInfo>
+                        <UserName>{cred.user?.userDetail?.name || 'Unknown User'}</UserName>
+                        <UserEmail>{cred.user?.email || 'N/A'}</UserEmail>
+                      </UserInfo>
+                    </CredentialUser>
+                  </CredentialHeader>
+
+                  <CredentialDetails>
+                    <DetailItem>
+                      <DetailLabel>Semester</DetailLabel>
+                      <DetailValue>{cred.semester?.semesterNumber || 'N/A'}</DetailValue>
+                    </DetailItem>
+                    <DetailItem>
+                      <DetailLabel>Template</DetailLabel>
+                      <DetailValue>{cred.template?.name || 'N/A'}</DetailValue>
+                    </DetailItem>
+                    <DetailItem>
+                      <DetailLabel>Status</DetailLabel>
+                      <DetailValue>
+                        {v.verified === true && <StatusBadge className="valid">✅ Valid</StatusBadge>}
+                        {v.verified === false && <StatusBadge className="invalid">❌ Invalid</StatusBadge>}
+                        {v.error && <StatusBadge className="warning">⚠️ Error</StatusBadge>}
+                        {!v.verified && !v.error && !v.loading && <StatusBadge className="pending">⏳ Pending</StatusBadge>}
+                      </DetailValue>
+                    </DetailItem>
+                  </CredentialDetails>
+
+                  <CredentialActions>
+                    {cred.cid && (
                       <PDFLink
                         href={cred.cid}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        View PDF
+                        📄 View PDF
                       </PDFLink>
-                    ) : (
-                      'N/A'
                     )}
-                  </td>
-                  <td>
-                    <VerificationStatus>
-                      <VerifyBtn
-                        onClick={() => handleVerify(cred._id)}
-                        disabled={v.loading}
-                      >
-                        {v.loading ? 'Verifying...' : 'Verify'}
-                      </VerifyBtn>
-                      {v.verified === true && <Status className="valid">✔ Valid</Status>}
-                      {v.verified === false && <Status className="invalid">✖ Invalid</Status>}
-                    </VerificationStatus>
-                  </td>
-                </tr>
+                    <VerifyButton
+                      onClick={() => handleVerify(cred._id)}
+                      disabled={v.loading}
+                    >
+                      {v.loading ? 'Verifying...' : 'Verify'}
+                    </VerifyButton>
+                  </CredentialActions>
+                </CredentialCard>
               );
-            })
-          ) : (
-            <tr>
-              <td colSpan="5">
-                <EmptyCredentials>
-                  <p>No credentials found</p>
-                </EmptyCredentials>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </CredTable>
+            })}
+          </CredentialGrid>
+        ) : (
+          <EmptyState>
+            <EmptyIcon>📜</EmptyIcon>
+            <EmptyTitle>No Credentials Found</EmptyTitle>
+            <EmptySubtitle>No credentials have been issued yet.</EmptySubtitle>
+          </EmptyState>
+        )}
+      </ContentSection>
 
       {/* Modal */}
       {modal.open && modal.cred && (
         <ModalOverlay>
-          <Modal className={modal.type}>
-            <p>{modal.message}</p>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                {modal.type === 'success' ? (
+                  <SuccessIcon>✅</SuccessIcon>
+                ) : (
+                  <ErrorIcon>⚠️</ErrorIcon>
+                )}
+              </ModalIcon>
+              <ModalTitle>
+                {modal.type === 'success' ? 'Verification Successful' : 'Verification Failed'}
+              </ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{modal.message}</p>
 
-            <ChainDetails>
-              <h4>On-Chain Details</h4>
-              <p><strong>Series ID:</strong> {modal.cred.seriesId}</p>
-              <p><strong>Version:</strong> {modal.cred.version}</p>
-              <p><strong>Content Hash:</strong> {modal.cred.onChain?.contentHash}</p>
-              <p>
-                <strong>CID:</strong>{' '}
-                <a
-                  href={`https://ipfs.io/ipfs/${modal.cred.onChain?.cid}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {modal.cred.onChain?.cid}
-                </a>
-              </p>
-              <p><strong>Issuer:</strong> {modal.cred.onChain?.issuer}</p>
-              <p><strong>Subject Wallet:</strong> {modal.cred.onChain?.subject}</p>
-              <p><strong>Revoked:</strong> {modal.cred.onChain?.revoked ? "Yes ❌" : "No ✅"}</p>
-              <p><strong>Issued At:</strong> {new Date(modal.cred.onChain?.issuedAt * 1000).toLocaleString()}</p>
-            </ChainDetails>
-
-            <button onClick={() => setModal({ ...modal, open: false })}>Close</button>
+              <ChainDetails>
+                <ChainDetailsTitle>On-Chain Details</ChainDetailsTitle>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Series ID</ChainDetailLabel>
+                  <ChainDetailValue>{modal.cred.seriesId}</ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Version</ChainDetailLabel>
+                  <ChainDetailValue>{modal.cred.version}</ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Content Hash</ChainDetailLabel>
+                  <ChainDetailValue>{modal.cred.onChain?.contentHash}</ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>CID</ChainDetailLabel>
+                  <ChainDetailValue>
+                    <ChainLink
+                      href={modal.cred.onChain?.cid}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {modal.cred.onChain?.cid}
+                    </ChainLink>
+                  </ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Issuer</ChainDetailLabel>
+                  <ChainDetailValue>{modal.cred.onChain?.issuer}</ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Subject Wallet</ChainDetailLabel>
+                  <ChainDetailValue>{modal.cred.onChain?.subject}</ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Revoked</ChainDetailLabel>
+                  <ChainDetailValue>
+                    {modal.cred.onChain?.revoked ? "Yes ❌" : "No ✅"}
+                  </ChainDetailValue>
+                </ChainDetailItem>
+                <ChainDetailItem>
+                  <ChainDetailLabel>Issued At</ChainDetailLabel>
+                  <ChainDetailValue>
+                    {new Date(modal.cred.onChain?.issuedAt * 1000).toLocaleString()}
+                  </ChainDetailValue>
+                </ChainDetailItem>
+              </ChainDetails>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setModal({ ...modal, open: false })}>
+                Close
+              </CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}
-    </CredContainer>
+    </CredentialsContainer>
   );
 }
 

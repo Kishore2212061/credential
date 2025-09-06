@@ -17,7 +17,7 @@ const REGISTRY_ABI = [
 ];
 
 
-const registry = new ethers.Contract("0xc5f035Dbe14d700bD57F9B08D92105629C9ff66b", REGISTRY_ABI, wallet);
+const registry = new ethers.Contract("0x7AF681f97af11Fd5Ab9C395646dDc0553F704341", REGISTRY_ABI, wallet);
 
 export function getIssuerAddress() {
   return wallet.address;

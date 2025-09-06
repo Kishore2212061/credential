@@ -2,12 +2,36 @@ import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
 import {
   DashboardContainer,
+  Header,
+  HeaderTitle,
+  HeaderSubtitle,
   CompanyCard,
+  CompanyInfo,
+  CompanyName,
+  CompanyEmail,
   Timer,
+  TimerText,
+  TimerExpired,
+  StudentSection,
+  SectionTitle,
   StudentGrid,
   StudentCard,
+  StudentAvatar,
+  StudentInfo,
+  StudentName,
+  StudentEmail,
+  StudentDetails,
+  DetailItem,
+  DetailLabel,
+  DetailValue,
   BackButton,
   DetailCard,
+  DetailHeader,
+  DetailTitle,
+  EmptyState,
+  EmptyIcon,
+  EmptyTitle,
+  EmptySubtitle
 } from "./VerifierDashboard.styles";
 import UserCredential from "./UserCredentials";
 
@@ -24,7 +48,7 @@ function VerifierDashboard() {
         const token = localStorage.getItem("verifierToken");
         const res = await api.get(`/verifier/students?token=${token}`);
         const res1 = await api.get(`/verifier/validate?token=${token}`);
-        
+
 
         setInvite(res1.data.invite || null);
         setStudents(res.data.students || []);
@@ -58,17 +82,47 @@ function VerifierDashboard() {
   if (selectedStudent) {
     return (
       <DashboardContainer>
-        <BackButton onClick={() => setSelectedStudent(null)}>← Back</BackButton>
+        <Header>
+          <BackButton onClick={() => setSelectedStudent(null)}>← Back to Students</BackButton>
+          <HeaderTitle>Student Details</HeaderTitle>
+          <HeaderSubtitle>View and verify student credentials</HeaderSubtitle>
+        </Header>
 
         {/* Detailed View */}
         <DetailCard>
-          <h2>{selectedStudent.name}</h2>
-          <p><strong>Email:</strong> {selectedStudent.user?.email}</p>
-          <p><strong>Register No:</strong> {selectedStudent.registerNo}</p>
-          <p><strong>Degree:</strong> {selectedStudent.degree}</p>
-          <p><strong>Branch:</strong> {selectedStudent.branch}</p>
-          <p><strong>Mode:</strong> {selectedStudent.mode}</p>
-          <p><strong>Regulations:</strong> {selectedStudent.regulations}</p>
+          <DetailHeader>
+            <StudentAvatar>
+              {(selectedStudent.name || selectedStudent.user?.email || "S").charAt(0).toUpperCase()}
+            </StudentAvatar>
+            <DetailTitle>{selectedStudent.name || "Unnamed Student"}</DetailTitle>
+          </DetailHeader>
+
+          <StudentDetails>
+            <DetailItem>
+              <DetailLabel>Email</DetailLabel>
+              <DetailValue>{selectedStudent.user?.email}</DetailValue>
+            </DetailItem>
+            <DetailItem>
+              <DetailLabel>Register No</DetailLabel>
+              <DetailValue>{selectedStudent.registerNo}</DetailValue>
+            </DetailItem>
+            <DetailItem>
+              <DetailLabel>Degree</DetailLabel>
+              <DetailValue>{selectedStudent.degree}</DetailValue>
+            </DetailItem>
+            <DetailItem>
+              <DetailLabel>Branch</DetailLabel>
+              <DetailValue>{selectedStudent.branch}</DetailValue>
+            </DetailItem>
+            <DetailItem>
+              <DetailLabel>Mode</DetailLabel>
+              <DetailValue>{selectedStudent.mode}</DetailValue>
+            </DetailItem>
+            <DetailItem>
+              <DetailLabel>Regulations</DetailLabel>
+              <DetailValue>{selectedStudent.regulations}</DetailValue>
+            </DetailItem>
+          </StudentDetails>
         </DetailCard>
 
         {/* Credentials */}
@@ -79,36 +133,65 @@ function VerifierDashboard() {
 
   return (
     <DashboardContainer>
+      <Header>
+        <HeaderTitle>Verifier Dashboard</HeaderTitle>
+        <HeaderSubtitle>Verify student credentials and academic records</HeaderSubtitle>
+      </Header>
+
       {invite && (
         <CompanyCard>
-          <h2>{invite.companyName}</h2>
-          <p><strong>Email:</strong> {invite.companyEmail}</p>
+          <CompanyInfo>
+            <CompanyName>{invite.companyName}</CompanyName>
+            <CompanyEmail>{invite.companyEmail}</CompanyEmail>
+          </CompanyInfo>
           <Timer>
             {timeLeft === "Expired" ? (
-              <span className="expired">⏰ Link expired</span>
+              <TimerExpired>⏰ Link expired</TimerExpired>
             ) : (
-              <span>⏳ Expires in {timeLeft}</span>
+              <TimerText>⏳ Expires in {timeLeft}</TimerText>
             )}
           </Timer>
         </CompanyCard>
       )}
 
-      <h3>Students</h3>
-      <StudentGrid>
-        {students.length > 0 ? (
-          students.map((s) => (
-            <StudentCard key={s._id} onClick={() => setSelectedStudent(s)}>
-              <h4>{s.name || "Unnamed Student"}</h4>
-              <p>{s.user?.email}</p>
-              <p><strong>Reg No:</strong> {s.registerNo}</p>
-              <p><strong>Degree:</strong> {s.degree}</p>
-              <p><strong>Branch:</strong> {s.branch}</p>
-            </StudentCard>
-          ))
-        ) : (
-          <p>No students found</p>
-        )}
-      </StudentGrid>
+      <StudentSection>
+        <SectionTitle>Students ({students.length})</SectionTitle>
+        <StudentGrid>
+          {students.length > 0 ? (
+            students.map((s) => (
+              <StudentCard key={s._id} onClick={() => setSelectedStudent(s)}>
+                <StudentAvatar>
+                  {(s.name || s.user?.email || "S").charAt(0).toUpperCase()}
+                </StudentAvatar>
+                <StudentInfo>
+                  <StudentName>{s.name || "Unnamed Student"}</StudentName>
+                  <StudentEmail>{s.user?.email}</StudentEmail>
+                  <StudentDetails>
+                    <DetailItem>
+                      <DetailLabel>Reg No:</DetailLabel>
+                      <DetailValue>{s.registerNo}</DetailValue>
+                    </DetailItem>
+                    <DetailItem>
+                      <DetailLabel>Degree:</DetailLabel>
+                      <DetailValue>{s.degree}</DetailValue>
+                    </DetailItem>
+                    <DetailItem>
+                      <DetailLabel>Branch:</DetailLabel>
+                      <DetailValue>{s.branch}</DetailValue>
+                    </DetailItem>
+                  </StudentDetails>
+                </StudentInfo>
+              </StudentCard>
+            ))
+          ) : (
+            <EmptyState>
+              <EmptyIcon>👥</EmptyIcon>
+              <EmptyTitle>No Students Found</EmptyTitle>
+              <EmptySubtitle>No students have been assigned to this verifier yet.</EmptySubtitle>
+            </EmptyState>
+          )}
+        </StudentGrid>
+      </StudentSection>
     </DashboardContainer>
   );
 }

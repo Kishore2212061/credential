@@ -2,13 +2,32 @@ import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
 import {
   ProfileContainer,
-  ProfileTitle,
+  FormHeader,
+  FormTitle,
+  FormSubtitle,
   ProfileForm,
+  FormSection,
+  FormGroup,
+  Label,
   Input,
+  InputWrapper,
+  InputIcon,
+  ValidationMessage,
   ProfileButton,
+  FormActions,
+  LoadingOverlay,
+  Spinner,
+  LoadingText,
   ModalOverlay,
   Modal,
-  Loader,
+  ModalHeader,
+  ModalTitle,
+  ModalContent,
+  ModalActions,
+  CloseButton,
+  SuccessIcon,
+  ErrorIcon,
+  ModalIcon
 } from "./UserProfile.styles";
 
 function UserProfile() {
@@ -16,6 +35,8 @@ function UserProfile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [validation, setValidation] = useState({});
+  const [touched, setTouched] = useState({});
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -47,87 +68,201 @@ function UserProfile() {
     }
   };
 
+  const validateField = (field, value) => {
+    const errors = { ...validation };
+
+    switch (field) {
+      case 'name':
+        if (value && value.trim().length < 2) {
+          errors.name = 'Name must be at least 2 characters';
+        } else {
+          delete errors.name;
+        }
+        break;
+      case 'registerNo':
+        if (value && value.trim().length < 3) {
+          errors.registerNo = 'Register number must be at least 3 characters';
+        } else {
+          delete errors.registerNo;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setValidation(errors);
+    return !errors[field];
+  };
+
+  const handleBlur = (field) => {
+    setTouched({ ...touched, [field]: true });
+    validateField(field, profile[field]);
+  };
+
   const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setProfile({ ...profile, [name]: value });
+
+    // Clear validation error when user starts typing
+    if (validation[name]) {
+      const errors = { ...validation };
+      delete errors[name];
+      setValidation(errors);
+    }
   };
 
   return (
     <ProfileContainer>
-      <ProfileTitle>My Profile</ProfileTitle>
+      <FormHeader>
+        <FormTitle>My Profile</FormTitle>
+        <FormSubtitle>Update your personal and academic information</FormSubtitle>
+      </FormHeader>
 
       <ProfileForm onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={profile.name || ""}
-          onChange={handleChange}
-        />
-        <Input
-          type="text"
-          name="degree"
-          placeholder="Degree"
-          value={profile.degree || ""}
-          onChange={handleChange}
-        />
-        <Input
-          type="text"
-          name="branch"
-          placeholder="Branch"
-          value={profile.branch || ""}
-          onChange={handleChange}
-        />
-        <Input
-          type="text"
-          name="mode"
-          placeholder="Mode"
-          value={profile.mode || ""}
-          onChange={handleChange}
-        />
-        <Input
-          type="text"
-          name="registerNo"
-          placeholder="Register No"
-          value={profile.registerNo || ""}
-          onChange={handleChange}
-        />
-        <Input
-          type="text"
-          name="regulations"
-          placeholder="Regulations"
-          value={profile.regulations || ""}
-          onChange={handleChange}
-        />
+        <FormSection>
+          <FormGroup>
+            <Label>Full Name</Label>
+            <InputWrapper>
+              <InputIcon>👤</InputIcon>
+              <Input
+                type="text"
+                name="name"
+                placeholder="Enter your full name"
+                value={profile.name || ""}
+                onChange={handleChange}
+                onBlur={() => handleBlur('name')}
+                hasError={touched.name && validation.name}
+              />
+            </InputWrapper>
+            {touched.name && validation.name && (
+              <ValidationMessage>{validation.name}</ValidationMessage>
+            )}
+          </FormGroup>
 
-        <ProfileButton type="submit">Update Profile</ProfileButton>
+          <FormGroup>
+            <Label>Degree</Label>
+            <InputWrapper>
+              <InputIcon>🎓</InputIcon>
+              <Input
+                type="text"
+                name="degree"
+                placeholder="Enter your degree (e.g., B.E, M.Tech)"
+                value={profile.degree || ""}
+                onChange={handleChange}
+              />
+            </InputWrapper>
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Branch</Label>
+            <InputWrapper>
+              <InputIcon>🏛️</InputIcon>
+              <Input
+                type="text"
+                name="branch"
+                placeholder="Enter your branch (e.g., Computer Science)"
+                value={profile.branch || ""}
+                onChange={handleChange}
+              />
+            </InputWrapper>
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Mode</Label>
+            <InputWrapper>
+              <InputIcon>📚</InputIcon>
+              <Input
+                type="text"
+                name="mode"
+                placeholder="Enter mode (e.g., Regular, Distance)"
+                value={profile.mode || ""}
+                onChange={handleChange}
+              />
+            </InputWrapper>
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Register Number</Label>
+            <InputWrapper>
+              <InputIcon>🔢</InputIcon>
+              <Input
+                type="text"
+                name="registerNo"
+                placeholder="Enter your register number"
+                value={profile.registerNo || ""}
+                onChange={handleChange}
+                onBlur={() => handleBlur('registerNo')}
+                hasError={touched.registerNo && validation.registerNo}
+              />
+            </InputWrapper>
+            {touched.registerNo && validation.registerNo && (
+              <ValidationMessage>{validation.registerNo}</ValidationMessage>
+            )}
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Regulations</Label>
+            <InputWrapper>
+              <InputIcon>📋</InputIcon>
+              <Input
+                type="text"
+                name="regulations"
+                placeholder="Enter regulations (e.g., 2017, 2018)"
+                value={profile.regulations || ""}
+                onChange={handleChange}
+              />
+            </InputWrapper>
+          </FormGroup>
+
+          <FormActions>
+            <ProfileButton type="submit" disabled={loading}>
+              {loading ? "Updating..." : "Update Profile"}
+            </ProfileButton>
+          </FormActions>
+        </FormSection>
       </ProfileForm>
 
-      {/* Loader Modal */}
       {loading && (
-        <ModalOverlay>
-          <Modal>
-            <Loader />
-            <p>Loading...</p>
-          </Modal>
-        </ModalOverlay>
+        <LoadingOverlay>
+          <Spinner />
+          <LoadingText>Loading profile...</LoadingText>
+        </LoadingOverlay>
       )}
 
-      {/* Error Modal */}
       {error && (
         <ModalOverlay>
-          <Modal className="error">
-            <p>{error}</p>
-            <button onClick={() => setError("")}>Close</button>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                <ErrorIcon>⚠️</ErrorIcon>
+              </ModalIcon>
+              <ModalTitle>Error</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{error}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}
 
-      {/* Success Modal */}
       {success && (
         <ModalOverlay>
-          <Modal className="success">
-            <p>{success}</p>
-            <button onClick={() => setSuccess("")}>Close</button>
+          <Modal>
+            <ModalHeader>
+              <ModalIcon>
+                <SuccessIcon>✅</SuccessIcon>
+              </ModalIcon>
+              <ModalTitle>Success</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{success}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}

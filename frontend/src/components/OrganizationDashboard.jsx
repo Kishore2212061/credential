@@ -14,11 +14,29 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   MainContent,
-  UserTable,
+  Header,
+  HeaderTitle,
+  HeaderSubtitle,
+  ContentSection,
+  SectionTitle,
+  UserGrid,
+  UserCard,
+  UserAvatar,
+  UserInfo,
+  UserName,
+  UserEmail,
+  EmptyState,
+  EmptyIcon,
+  EmptyTitle,
+  EmptySubtitle,
   LoadingOverlay,
   Spinner,
   ModalOverlay,
   Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalContent,
+  ModalActions,
   CloseButton,
 } from "./OrganizationDashboard.styles";
 
@@ -87,12 +105,12 @@ function OrganizationDashboard() {
           >
             Credential List
           </SidebarMenuItem>
-                  <SidebarMenuItem
-  className={activeTab === "inviteVerifier" ? "active" : ""}
-  onClick={() => setActiveTab("inviteVerifier")}
->
-  Invite Verifier
-</SidebarMenuItem>
+          <SidebarMenuItem
+            className={activeTab === "inviteVerifier" ? "active" : ""}
+            onClick={() => setActiveTab("inviteVerifier")}
+          >
+            Invite Verifier
+          </SidebarMenuItem>
         </SidebarMenu>
       </Sidebar>
 
@@ -106,31 +124,38 @@ function OrganizationDashboard() {
           />
         )}
         {activeTab === "userList" && (
-          <div>
-            <h3>User List</h3>
-            <UserTable>
-              <thead>
-                <tr>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.length > 0 ? (
-                  users.map((user) => (
-                    <tr key={user._id}>
-                      <td>{user.email}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="1" style={{ textAlign: "center" }}>
-                      No users found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </UserTable>
-          </div>
+          <>
+            <Header>
+              <HeaderTitle>User Management</HeaderTitle>
+              <HeaderSubtitle>Manage and monitor your organization's users</HeaderSubtitle>
+            </Header>
+
+            <ContentSection>
+              <SectionTitle>Registered Users ({users.length})</SectionTitle>
+
+              {users.length > 0 ? (
+                <UserGrid>
+                  {users.map((user) => (
+                    <UserCard key={user._id}>
+                      <UserAvatar>
+                        {user.email.charAt(0).toUpperCase()}
+                      </UserAvatar>
+                      <UserInfo>
+                        <UserName>{user.email}</UserName>
+                        <UserEmail>Organization User</UserEmail>
+                      </UserInfo>
+                    </UserCard>
+                  ))}
+                </UserGrid>
+              ) : (
+                <EmptyState>
+                  <EmptyIcon>👥</EmptyIcon>
+                  <EmptyTitle>No Users Found</EmptyTitle>
+                  <EmptySubtitle>Start by adding users to your organization.</EmptySubtitle>
+                </EmptyState>
+              )}
+            </ContentSection>
+          </>
         )}
         {activeTab === "semesterForm" && (
           <SemesterForm setSuccess={setSuccess} setError={setError} />
@@ -145,8 +170,8 @@ function OrganizationDashboard() {
           <CredentialList setSuccess={setSuccess} setError={setError} />
         )}
         {activeTab === "inviteVerifier" && (
-  <VerifierOnboard setSuccess={setSuccess} setError={setError} />
-)}
+          <VerifierOnboard setSuccess={setSuccess} setError={setError} />
+        )}
 
       </MainContent>
 
@@ -161,9 +186,15 @@ function OrganizationDashboard() {
       {error && (
         <ModalOverlay>
           <Modal>
-            <h3>Error</h3>
-            <p>{error}</p>
-            <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            <ModalHeader>
+              <ModalTitle>⚠️ Error</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{error}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setError("")}>Close</CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}
@@ -171,10 +202,16 @@ function OrganizationDashboard() {
       {/* Success Modal */}
       {success && (
         <ModalOverlay>
-          <Modal className="success-modal">
-            <h3>Success</h3>
-            <p>{success}</p>
-            <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+          <Modal>
+            <ModalHeader>
+              <ModalTitle>✅ Success</ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{success}</p>
+            </ModalContent>
+            <ModalActions>
+              <CloseButton onClick={() => setSuccess("")}>Close</CloseButton>
+            </ModalActions>
           </Modal>
         </ModalOverlay>
       )}

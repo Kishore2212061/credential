@@ -2,19 +2,40 @@ import React, { useState } from "react";
 import { api } from "../utils/api";
 import {
   TemplateFormContainer,
+  FormHeader,
+  FormTitle,
+  FormSubtitle,
   TemplateForm as StyledForm,
+  FormSection,
   FormRow,
   FormGroup,
   Label,
   Input,
+  InputWrapper,
+  InputIcon,
   TextArea,
   CodeSection,
+  CodeHeader,
+  CodeTitle,
+  CodeSubtitle,
   CodeGroup,
+  CodeLabel,
   CodeTextArea,
   SubmitButton,
+  FormActions,
+  LoadingOverlay,
+  Spinner,
+  LoadingText,
   TemplateModalOverlay,
   TemplateModal,
-  TemplateLoader,
+  ModalHeader,
+  ModalTitle,
+  ModalContent,
+  ModalIcon,
+  ModalActions,
+  CloseButton,
+  SuccessIcon,
+  ErrorIcon
 } from "./TemplateForm.styles";
 
 function TemplateForm() {
@@ -67,95 +88,139 @@ function TemplateForm() {
 
   return (
     <TemplateFormContainer>
-      <h4>Add/Update Template</h4>
+      <FormHeader>
+        <FormTitle>Add/Update Template</FormTitle>
+        <FormSubtitle>Create or update credential templates for issuing certificates</FormSubtitle>
+      </FormHeader>
 
       <StyledForm onSubmit={handleSubmit}>
-        <FormRow>
-          <FormGroup>
-            <Label>Template Name</Label>
-            <Input
-              type="text"
-              name="name"
-              placeholder="Template Name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-          </FormGroup>
+        <FormSection>
+          <FormRow>
+            <FormGroup>
+              <Label>Template Name</Label>
+              <InputWrapper>
+                <InputIcon>📄</InputIcon>
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder="Enter template name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+              </InputWrapper>
+            </FormGroup>
 
-          <FormGroup>
-            <Label>Description</Label>
-            <Input
-              type="text"
-              name="description"
-              placeholder="Description"
-              value={form.description}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <Label>Description</Label>
+              <InputWrapper>
+                <InputIcon>📝</InputIcon>
+                <Input
+                  type="text"
+                  name="description"
+                  placeholder="Enter template description"
+                  value={form.description}
+                  onChange={handleChange}
+                />
+              </InputWrapper>
+            </FormGroup>
+          </FormRow>
 
-        <FormRow>
-          <FormGroup>
-            <Label>Certificate Title</Label>
-            <Input
-              type="text"
-              name="title"
-              placeholder="Certificate Title (e.g. GRADE SHEET)"
-              value={form.title}
-              onChange={handleChange}
-            />
-          </FormGroup>
+          <FormRow>
+            <FormGroup>
+              <Label>Certificate Title</Label>
+              <InputWrapper>
+                <InputIcon>🏆</InputIcon>
+                <Input
+                  type="text"
+                  name="title"
+                  placeholder="Certificate Title (e.g. GRADE SHEET)"
+                  value={form.title}
+                  onChange={handleChange}
+                />
+              </InputWrapper>
+            </FormGroup>
 
-          <FormGroup>
-            <Label>Program</Label>
-            <Input
-              type="text"
-              name="program"
-              placeholder="Program (e.g. B.E Degree Examinations)"
-              value={form.program}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <Label>Program</Label>
+              <InputWrapper>
+                <InputIcon>🎓</InputIcon>
+                <Input
+                  type="text"
+                  name="program"
+                  placeholder="Program (e.g. B.E Degree Examinations)"
+                  value={form.program}
+                  onChange={handleChange}
+                />
+              </InputWrapper>
+            </FormGroup>
+          </FormRow>
 
-        <CodeSection>
-          <CodeGroup>
-            <label>HTML (Handlebars)</label>
-            <CodeTextArea
-              name="html"
-              placeholder="HTML (Handlebars)"
-              value={form.html}
-              onChange={handleChange}
-              rows="5"
-              required
-            />
-          </CodeGroup>
+          <CodeSection>
+            <CodeHeader>
+              <CodeTitle>Template Code</CodeTitle>
+              <CodeSubtitle>Define the HTML structure and CSS styling for your certificate template</CodeSubtitle>
+            </CodeHeader>
 
-          <CodeGroup>
-            <label>CSS</label>
-            <CodeTextArea
-              name="css"
-              placeholder="CSS"
-              value={form.css}
-              onChange={handleChange}
-              rows="5"
-            />
-          </CodeGroup>
-        </CodeSection>
+            <CodeGroup>
+              <CodeLabel>HTML (Handlebars)</CodeLabel>
+              <CodeTextArea
+                name="html"
+                placeholder="Enter HTML template with Handlebars syntax..."
+                value={form.html}
+                onChange={handleChange}
+                rows="8"
+                required
+              />
+            </CodeGroup>
 
-        <SubmitButton type="submit">Submit Template</SubmitButton>
+            <CodeGroup>
+              <CodeLabel>CSS</CodeLabel>
+              <CodeTextArea
+                name="css"
+                placeholder="Enter CSS styles for your template..."
+                value={form.css}
+                onChange={handleChange}
+                rows="8"
+              />
+            </CodeGroup>
+          </CodeSection>
+
+          <FormActions>
+            <SubmitButton type="submit">
+              {modal.type === "loading" ? "Submitting..." : "Submit Template"}
+            </SubmitButton>
+          </FormActions>
+        </FormSection>
       </StyledForm>
 
       {modal.visible && (
         <TemplateModalOverlay>
-          <TemplateModal className={modal.type}>
-            {modal.type === "loading" && <TemplateLoader />}
-            <p>{modal.message}</p>
+          <TemplateModal>
+            <ModalHeader>
+              <ModalIcon>
+                {modal.type === "loading" ? (
+                  <Spinner />
+                ) : modal.type === "success" ? (
+                  <SuccessIcon>✅</SuccessIcon>
+                ) : (
+                  <ErrorIcon>⚠️</ErrorIcon>
+                )}
+              </ModalIcon>
+              <ModalTitle>
+                {modal.type === "loading" ? "Processing..." :
+                  modal.type === "success" ? "Success" : "Error"}
+              </ModalTitle>
+            </ModalHeader>
+            <ModalContent>
+              <p>{modal.message}</p>
+            </ModalContent>
             {modal.type !== "loading" && (
-              <button onClick={() => setModal({ ...modal, visible: false })}>
-                Close
-              </button>
+              <ModalActions>
+                <CloseButton onClick={() => setModal({ ...modal, visible: false })}>
+                  Close
+                </CloseButton>
+              </ModalActions>
             )}
           </TemplateModal>
         </TemplateModalOverlay>

@@ -40,7 +40,7 @@ const pulse = keyframes`
   }
 `;
 
-export const SemesterContainer = styled.div`
+export const CredentialsContainer = styled.div`
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   border-radius: 24px;
@@ -50,7 +50,7 @@ export const SemesterContainer = styled.div`
     0 0 0 1px rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
   animation: ${fadeIn} 0.6s ease-out;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   position: relative;
   
@@ -60,12 +60,12 @@ export const SemesterContainer = styled.div`
   }
 `;
 
-export const FormHeader = styled.div`
+export const Header = styled.div`
   text-align: center;
   margin-bottom: 40px;
 `;
 
-export const FormTitle = styled.h4`
+export const HeaderTitle = styled.h4`
   color: #1e293b;
   margin: 0 0 12px 0;
   font-size: 32px;
@@ -77,20 +77,14 @@ export const FormTitle = styled.h4`
   background-clip: text;
 `;
 
-export const FormSubtitle = styled.p`
+export const HeaderSubtitle = styled.p`
   color: #64748b;
   margin: 0;
   font-size: 18px;
   font-weight: 500;
 `;
 
-export const SemesterForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-`;
-
-export const FormSection = styled.div`
+export const ContentSection = styled.div`
   background: rgba(248, 250, 252, 0.8);
   border-radius: 20px;
   padding: 32px;
@@ -110,276 +104,194 @@ export const FormSection = styled.div`
   }
 `;
 
-export const FormRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-  margin-bottom: 24px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-export const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-  z-index: 1;
-`;
-
-export const Label = styled.label`
-  color: #374151;
-  font-weight: 700;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-export const InputWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-export const InputIcon = styled.div`
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: #9ca3af;
-  z-index: 1;
-  transition: color 0.3s ease;
-`;
-
-export const Input = styled.input`
-  width: 100%;
-  padding: 20px 20px 20px 60px;
-  border: 2px solid #e5e7eb;
-  border-radius: 16px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    background: white;
-    box-shadow: 
-      0 0 0 4px rgba(59, 130, 246, 0.1),
-      0 8px 16px rgba(59, 130, 246, 0.1);
-    transform: translateY(-2px);
-    
-    + ${InputIcon} {
-      color: #3b82f6;
-    }
-  }
-  
-  &:hover:not(:focus) {
-    border-color: #d1d5db;
-    transform: translateY(-1px);
-  }
-  
-  &::placeholder {
-    color: #9ca3af;
-    font-weight: 400;
-  }
-`;
-
-export const Select = styled.select`
-  width: 100%;
-  padding: 20px 20px 20px 60px;
-  border: 2px solid #e5e7eb;
-  border-radius: 16px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
-  cursor: pointer;
-  font-weight: 500;
-  
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    background: white;
-    box-shadow: 
-      0 0 0 4px rgba(59, 130, 246, 0.1),
-      0 8px 16px rgba(59, 130, 246, 0.1);
-    transform: translateY(-2px);
-    
-    + ${InputIcon} {
-      color: #3b82f6;
-    }
-  }
-  
-  &:hover:not(:focus) {
-    border-color: #d1d5db;
-    transform: translateY(-1px);
-  }
-  
-  option {
-    padding: 12px;
-    background: white;
-    color: #374151;
-  }
-`;
-
-export const SubjectSection = styled.div`
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 20px;
-  padding: 32px;
-  border: 2px solid #e2e8f0;
-  margin: 24px 0;
-  position: relative;
-  z-index: 1;
-`;
-
-export const SubjectHeader = styled.div`
-  margin-bottom: 24px;
-`;
-
-export const SubjectTitle = styled.h5`
+export const SectionTitle = styled.h5`
   color: #1e293b;
-  margin: 0 0 8px 0;
+  margin: 0 0 24px 0;
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.025em;
+  position: relative;
+  z-index: 1;
 `;
 
-export const SubjectSubtitle = styled.p`
-  color: #64748b;
-  margin: 0;
-  font-size: 16px;
-  font-weight: 500;
-`;
-
-export const SubjectRow = styled.div`
+export const CredentialGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr 1fr 1fr auto;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 16px;
-  background: rgba(248, 250, 252, 0.8);
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(59, 130, 246, 0.05);
-    border-color: #3b82f6;
-    transform: translateY(-2px);
-  }
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+  position: relative;
+  z-index: 1;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
 `;
 
-export const SubjectInputWrapper = styled.div`
+export const CredentialCard = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(147, 51, 234, 0.02) 100%);
+    pointer-events: none;
+  }
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+      0 12px 32px rgba(0, 0, 0, 0.12),
+      0 0 0 1px rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+`;
+
+export const CredentialHeader = styled.div`
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+`;
+
+export const CredentialUser = styled.div`
   display: flex;
   align-items: center;
+  gap: 16px;
 `;
 
-export const SubjectInputIcon = styled.div`
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #9ca3af;
-  z-index: 1;
-  transition: color 0.3s ease;
-`;
-
-export const SubjectInput = styled.input`
-  width: 100%;
-  padding: 12px 12px 12px 40px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    background: white;
-    box-shadow: 
-      0 0 0 3px rgba(59, 130, 246, 0.1),
-      0 4px 8px rgba(59, 130, 246, 0.1);
-    transform: translateY(-1px);
-    
-    + ${SubjectInputIcon} {
-      color: #3b82f6;
-    }
-  }
-  
-  &:hover:not(:focus) {
-    border-color: #d1d5db;
-  }
-  
-  &::placeholder {
-    color: #9ca3af;
-    font-weight: 400;
-  }
-`;
-
-export const RemoveButton = styled.button`
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+export const UserAvatar = styled.div`
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-  min-width: 48px;
-  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  flex-shrink: 0;
+`;
+
+export const UserInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+export const UserName = styled.h6`
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const UserEmail = styled.p`
+  color: #64748b;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const CredentialDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+`;
+
+export const DetailItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
   
-  &:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
-  }
-  
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3);
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
-export const AddSubjectButton = styled.button`
+export const DetailLabel = styled.span`
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+export const DetailValue = styled.span`
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+  margin-left: 16px;
+`;
+
+export const CredentialActions = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+`;
+
+export const VerifyButton = styled.button`
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  padding: 16px 24px;
-  border-radius: 16px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 16px;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  width: 100%;
+  flex: 1;
   
-  &:hover {
+  &:hover:not(:disabled) {
     background: linear-gradient(135deg, #059669 0%, #047857 100%);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
   &:focus {
@@ -388,66 +300,92 @@ export const AddSubjectButton = styled.button`
   }
 `;
 
-export const FormActions = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 32px;
-`;
-
-export const SubmitButton = styled.button`
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  color: white;
-  border: none;
-  padding: 20px 40px;
-  border-radius: 16px;
-  font-size: 18px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+export const StatusBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  min-width: 200px;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+  &.valid {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #059669;
   }
   
-  &:hover:not(:disabled) {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 32px rgba(59, 130, 246, 0.4);
+  &.invalid {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #dc2626;
+  }
+  
+  &.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #d97706;
+  }
+  
+  &.pending {
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    color: #3730a3;
+  }
+`;
+
+export const PDFLink = styled.a`
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  &:hover {
     background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    
-    &::before {
-      left: 100%;
-    }
-  }
-  
-  &:active {
     transform: translateY(-2px);
-  }
-  
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-    transform: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
   }
   
   &:focus {
     outline: none;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
   }
+`;
+
+export const EmptyState = styled.div`
+  text-align: center;
+  padding: 60px 20px;
+  position: relative;
+  z-index: 1;
+`;
+
+export const EmptyIcon = styled.div`
+  font-size: 64px;
+  margin-bottom: 24px;
+  animation: ${float} 3s ease-in-out infinite;
+`;
+
+export const EmptyTitle = styled.h5`
+  color: #1e293b;
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
+
+export const EmptySubtitle = styled.p`
+  color: #64748b;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 export const LoadingOverlay = styled.div`
@@ -462,7 +400,7 @@ export const LoadingOverlay = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 24px;
+  border-radius: 20px;
   animation: ${fadeIn} 0.3s ease-out;
   z-index: 10;
 `;
@@ -511,8 +449,10 @@ export const Modal = styled.div`
   backdrop-filter: blur(20px);
   border-radius: 24px;
   padding: 40px;
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
   box-shadow: 
     0 25px 50px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.2);
@@ -565,7 +505,10 @@ export const ModalContent = styled.div`
   font-size: 16px;
   
   p {
-    margin: 0;
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
   }
 `;
 
@@ -597,5 +540,63 @@ export const CloseButton = styled.button`
   &:focus {
     outline: none;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+  }
+`;
+
+export const ChainDetails = styled.div`
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  border: 1px solid #e2e8f0;
+`;
+
+export const ChainDetailsTitle = styled.h4`
+  color: #1e293b;
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+`;
+
+export const ChainDetailItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const ChainDetailLabel = styled.span`
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 0 0 140px;
+`;
+
+export const ChainDetailValue = styled.span`
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+  margin-left: 16px;
+  word-break: break-all;
+`;
+
+export const ChainLink = styled.a`
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  
+  &:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
   }
 `;

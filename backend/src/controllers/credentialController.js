@@ -172,7 +172,7 @@ export const issueCredential = async (req, res) => {
       latestVersion: newVersion,
       chain: {
         network: process.env.CHAIN_NAME || "sepolia",
-        contract: "0xc5f035Dbe14d700bD57F9B08D92105629C9ff66b",
+        contract: "0x7AF681f97af11Fd5Ab9C395646dDc0553F704341",
         txHash,
         revoked: false,
       },
