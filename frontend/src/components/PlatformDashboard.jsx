@@ -46,8 +46,6 @@ import {
   CloseButton,
   CancelButton,
   DeleteConfirmButton,
-  EmptyState,
-  FloatingActionButton
 } from "./PlatformDashboard.styles";
 
 function PlatformDashboard() {
