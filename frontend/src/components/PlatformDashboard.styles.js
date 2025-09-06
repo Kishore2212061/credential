@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { motion } from 'framer-motion';
 
 const fadeIn = keyframes`
   from {
@@ -55,6 +56,7 @@ export const DashboardWrapper = styled.div`
 
 export const Sidebar = styled.aside`
   width: 320px;
+  width: 320px;
   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   color: white;
   padding: 0;
@@ -85,6 +87,7 @@ export const Sidebar = styled.aside`
 
 export const SidebarTitle = styled.h2`
   padding: 40px 32px 32px;
+  padding: 40px 32px 32px;
   margin: 0;
   font-size: 24px;
   font-weight: 800;
@@ -98,6 +101,7 @@ export const SidebarTitle = styled.h2`
 export const SidebarMenu = styled.ul`
   list-style: none;
   padding: 32px 0;
+  padding: 32px 0;
   margin: 0;
   position: relative;
   z-index: 1;
@@ -106,6 +110,7 @@ export const SidebarMenu = styled.ul`
 export const SidebarMenuItem = styled.li`
   padding: 20px 32px;
   cursor: pointer;
+  transition: all 0.3s ease;
   transition: all 0.3s ease;
   border-left: 4px solid transparent;
   font-weight: 600;
@@ -148,6 +153,7 @@ export const SidebarMenuItem = styled.li`
 
 export const MainContent = styled.main`
   flex: 1;
+  padding: 40px;
   padding: 40px;
   animation: ${fadeIn} 0.6s ease-out;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -292,6 +298,7 @@ export const SearchInput = styled.input`
   padding: 20px 20px 20px 60px;
   border: 2px solid #e5e7eb;
   border-radius: 16px;
+  border-radius: 16px;
   font-size: 16px;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.9);
@@ -308,6 +315,7 @@ export const SearchInput = styled.input`
   
   &::placeholder {
     color: #9ca3af;
+    font-weight: 500;
   }
 `;
 
@@ -489,6 +497,8 @@ export const LoadingOverlay = styled.div`
 export const Spinner = styled.div`
   width: 60px;
   height: 60px;
+  width: 60px;
+  height: 60px;
   border: 4px solid #f1f5f9;
   border-top: 4px solid #3b82f6;
   border-radius: 50%;
@@ -500,7 +510,7 @@ export const Spinner = styled.div`
   }
 `;
 
-export const ModalOverlay = styled.div`
+export const ModalOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
@@ -512,7 +522,6 @@ export const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  animation: ${fadeIn} 0.3s ease-out;
   padding: 20px;
 `;
 
@@ -595,8 +604,8 @@ export const CloseButton = styled.button`
 `;
 
 export const CancelButton = styled.button`
-  background: #f3f4f6;
-  color: #374151;
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
   border: none;
   padding: 16px 32px;
   border-radius: 12px;

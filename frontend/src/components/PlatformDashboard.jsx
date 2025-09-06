@@ -1,7 +1,7 @@
-// PlatformDashboard.js
 import React, { useState, useEffect } from "react";
 import { api } from "../utils/api";
 import AddOrganization from "./AddOrganization";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DashboardWrapper,
   Sidebar,
@@ -45,7 +45,9 @@ import {
   ModalActions,
   CloseButton,
   CancelButton,
-  DeleteConfirmButton
+  DeleteConfirmButton,
+  EmptyState,
+  FloatingActionButton
 } from "./PlatformDashboard.styles";
 
 function PlatformDashboard() {
@@ -115,6 +117,28 @@ function PlatformDashboard() {
     setActiveTab("add");
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
     <DashboardWrapper>
       {/* Sidebar */}
@@ -127,7 +151,10 @@ function PlatformDashboard() {
               setActiveTab("list");
               setEditOrg(null);
             }}
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.98 }}
           >
+            <span>📊</span>
             Organization List
           </SidebarMenuItem>
           <SidebarMenuItem
@@ -136,7 +163,10 @@ function PlatformDashboard() {
               setActiveTab("add");
               setEditOrg(null);
             }}
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.98 }}
           >
+            <span>➕</span>
             Add Organization
           </SidebarMenuItem>
         </SidebarMenu>

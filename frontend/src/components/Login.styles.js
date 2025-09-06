@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { motion } from 'framer-motion';
 
 const fadeIn = keyframes`
   from {
@@ -63,6 +64,7 @@ export const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   padding: 24px;
   position: relative;
@@ -136,6 +138,9 @@ export const LoginTitle = styled.h2`
   font-size: 32px;
   font-weight: 800;
   margin: 0 0 12px 0;
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
   letter-spacing: -0.025em;
   background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
   -webkit-background-clip: text;
@@ -147,6 +152,7 @@ export const LoginSubtitle = styled.p`
   color: #64748b;
   font-size: 18px;
   margin: 0;
+  font-weight: 500;
   font-weight: 500;
 `;
 
@@ -231,6 +237,21 @@ export const RoleLabel = styled.span`
 
 export const InputWrapper = styled.div`
   position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+  }
+  
+  &:focus-within::after {
+    width: 100%;
+  }
 `;
 
 export const LoginInput = styled.input`
@@ -246,7 +267,7 @@ export const LoginInput = styled.input`
   
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #667eea;
     background: white;
     box-shadow: 
       0 0 0 4px rgba(59, 130, 246, 0.1),
@@ -256,6 +277,7 @@ export const LoginInput = styled.input`
   
   &:hover:not(:focus) {
     border-color: #d1d5db;
+    transform: translateY(-1px);
     transform: translateY(-1px);
   }
   
@@ -279,7 +301,7 @@ export const LoginSelect = styled.select`
   
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #667eea;
     background: white;
     box-shadow: 
       0 0 0 4px rgba(59, 130, 246, 0.1),
@@ -290,11 +312,12 @@ export const LoginSelect = styled.select`
   &:hover:not(:focus) {
     border-color: #d1d5db;
     transform: translateY(-1px);
+    transform: translateY(-1px);
   }
 `;
 
-export const LoginButton = styled.button`
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+export const LoginButton = styled(motion.button)`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   padding: 20px 32px;
@@ -414,7 +437,7 @@ export const LoadingText = styled.p`
   font-size: 16px;
 `;
 
-export const ModalOverlay = styled.div`
+export const ModalOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
@@ -426,7 +449,6 @@ export const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  animation: ${fadeIn} 0.3s ease-out;
   padding: 20px;
 `;
 
@@ -473,6 +495,10 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalIcon = styled.span`
+  font-size: 32px;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
   font-size: 32px;
   width: 64px;
   height: 64px;

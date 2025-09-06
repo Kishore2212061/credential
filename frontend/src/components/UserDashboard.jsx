@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import { api, getId } from "../utils/api";
 import UserProfile from "./UserProfile";
 import UserCredential from "./UserCredentials";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DashboardContainer,
   Sidebar,
+  SidebarHeader,
+  SidebarTitle,
+  SidebarMenu,
+  SidebarMenuItem,
   MainContent,
   Header,
   HeaderTitle,
@@ -43,7 +48,7 @@ function UserDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [activeTab, setActiveTab] = useState("profile"); // profile | semesters | credentials
+  const [activeTab, setActiveTab] = useState("profile");
 
   useEffect(() => {
     const fetchSemesters = async () => {
@@ -61,8 +66,32 @@ function UserDashboard() {
     fetchSemesters();
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
     <DashboardContainer>
+      <GradientBackground />
+      
       {/* Sidebar */}
       <Sidebar>
         <h2>Dashboard</h2>
@@ -70,6 +99,8 @@ function UserDashboard() {
           <TabButton
             className={activeTab === "profile" ? "active" : ""}
             onClick={() => setActiveTab("profile")}
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.98 }}
           >
             👤 My Profile
           </TabButton>
@@ -82,6 +113,8 @@ function UserDashboard() {
           <TabButton
             className={activeTab === "credentials" ? "active" : ""}
             onClick={() => setActiveTab("credentials")}
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.98 }}
           >
             🎓 Credentials
           </TabButton>
