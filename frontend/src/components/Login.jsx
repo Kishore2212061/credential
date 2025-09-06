@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { api, setAuth } from "../utils/api";
+import { motion } from "framer-motion";
 
 // styled components
 import {
@@ -28,7 +29,10 @@ import {
   ModalTitle,
   ModalText,
   ModalActions,
-  CloseButton
+  CloseButton,
+  BackgroundPattern,
+  GlowEffect,
+  FloatingElement
 } from "./Login.styles";
 
 function Login({ onLogin }) {
@@ -68,54 +72,81 @@ function Login({ onLogin }) {
 
   return (
     <LoginContainer>
-      <LoginCard>
-        <LoginHeader>
-          <FormIcon>🔐</FormIcon>
-          <LoginTitle>Welcome Back</LoginTitle>
-          <LoginSubtitle>Sign in to your account</LoginSubtitle>
-        </LoginHeader>
+      <BackgroundPattern />
+      <GlowEffect />
+      
+      {/* Floating decorative elements */}
+      <FloatingElement delay={0} />
+      <FloatingElement delay={2} />
+      <FloatingElement delay={4} />
 
-        <LoginForm onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Select Role</Label>
-            <LoginSelect value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="platform">Platform Admin</option>
-              <option value="organization">Organization</option>
-              <option value="user">User</option>
-            </LoginSelect>
-          </FormGroup>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <LoginCard>
+          <LoginHeader>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+            >
+              <FormIcon>🔐</FormIcon>
+            </motion.div>
+            <LoginTitle>Welcome Back</LoginTitle>
+            <LoginSubtitle>Sign in to your account to continue</LoginSubtitle>
+          </LoginHeader>
 
-          <FormGroup>
-            <Label>Email Address</Label>
-            <InputWrapper>
-              <LoginInput
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </InputWrapper>
-          </FormGroup>
+          <LoginForm onSubmit={handleSubmit}>
+            <FormGroup>
+              <Label>Select Role</Label>
+              <InputWrapper>
+                <LoginSelect value={role} onChange={(e) => setRole(e.target.value)}>
+                  <option value="platform">Platform Admin</option>
+                  <option value="organization">Organization</option>
+                  <option value="user">User</option>
+                </LoginSelect>
+              </InputWrapper>
+            </FormGroup>
 
-          <FormGroup>
-            <Label>Password</Label>
-            <InputWrapper>
-              <LoginInput
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </InputWrapper>
-          </FormGroup>
+            <FormGroup>
+              <Label>Email Address</Label>
+              <InputWrapper>
+                <LoginInput
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </InputWrapper>
+            </FormGroup>
 
-          <LoginButton type="submit" disabled={loading}>
-            {loading ? "Signing In..." : "Sign In"}
-          </LoginButton>
-        </LoginForm>
-      </LoginCard>
+            <FormGroup>
+              <Label>Password</Label>
+              <InputWrapper>
+                <LoginInput
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </InputWrapper>
+            </FormGroup>
+
+            <LoginButton 
+              type="submit" 
+              disabled={loading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </LoginButton>
+          </LoginForm>
+        </LoginCard>
+      </motion.div>
 
       {loading && (
         <LoadingOverlay>
@@ -128,8 +159,16 @@ function Login({ onLogin }) {
 
       {/* Error modal */}
       {error && (
-        <ModalOverlay>
-          <Modal>
+        <ModalOverlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <Modal
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+          >
             <ModalHeader>
               <ModalIcon>⚠️</ModalIcon>
               <ModalTitle>Authentication Error</ModalTitle>
@@ -144,8 +183,16 @@ function Login({ onLogin }) {
 
       {/* Wallet modal shown on first login */}
       {walletInfo && (
-        <ModalOverlay>
-          <Modal>
+        <ModalOverlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <Modal
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+          >
             <ModalHeader>
               <ModalIcon>🔑</ModalIcon>
               <ModalTitle>Your Wallet Has Been Created</ModalTitle>
